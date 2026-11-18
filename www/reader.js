@@ -44,8 +44,10 @@
   let zoom = parseFloat(ls.get(K_ZOOM, '1')) || 1;
   let els = [], io = null;
   const rendered = new Map();
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  let lastW = 0, saveT = null, ticking = false;
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  let lastW = 0, saveT = null, ticking = false, lastReady = null;
+  const visible = new Set(), pending = new Set();
+  let busy = false;
 
   const show = (id, on) => { const e = $(id); if (e) e.style.display = on ? 'flex' : 'none'; };
   const isPdf = buf => { const u = new Uint8Array(buf.slice(0, 5)); return u[0] === 0x25 && u[1] === 0x50 && u[2] === 0x44 && u[3] === 0x46; };
@@ -101,22 +103,37 @@
   }
 
   // ---------- load ----------
-  // Read the PDF lazily from the Blob (only the parts that are needed), so even a
-  // 100+ MB file opens fast and does not fill the phone's memory.
+  // The PDF opens immediately by reading only the needed parts of the file. In the
+  // background the whole file is read into memory once (one fast sequential read);
+  // after that every page request is answered from memory, which is much faster
+  // than many small reads from storage.
+  const MAX_MEM = 400 * 1024 * 1024;
   async function makeSource(blob) {
     const first = new Uint8Array(await blob.slice(0, Math.min(blob.size, 65536)).arrayBuffer());
     const transport = new pdfjsLib.PDFDataRangeTransport(blob.size, first);
+    let mem = null;
     transport.requestDataRange = function (begin, end) {
+      // always answer asynchronously (pdf.js is not ready for an instant reply); slice = small copy
+      if (mem) { const chunk = mem.slice(begin, end); setTimeout(() => transport.onDataRange(begin, chunk), 0); return; }
       blob.slice(begin, end).arrayBuffer().then(buf => transport.onDataRange(begin, new Uint8Array(buf)));
     };
-    return { range: transport, disableAutoFetch: true, disableStream: true };
+    let ready = Promise.resolve();
+    if (blob.size <= MAX_MEM) {
+      ready = blob.arrayBuffer().then(ab => { mem = new Uint8Array(ab); }).catch(() => {});
+    }
+    return {
+      ready: ready,
+      opts: { range: transport, disableAutoFetch: true, disableStream: true, rangeChunkSize: 524288 }
+    };
   }
 
   async function loadBlob(blob, name, startPage) {
     show('rdLoading', true); show('rdEmpty', false);
     try {
       if (pdf) { try { pdf.destroy(); } catch (e) {} pdf = null; }
-      pdf = await pdfjsLib.getDocument(await makeSource(blob)).promise;
+      const src = await makeSource(blob);
+      lastReady = src.ready;
+      pdf = await pdfjsLib.getDocument(src.opts).promise;
       total = pdf.numPages;
       const p1 = await pdf.getPage(1);
       const vp = p1.getViewport({ scale: 1 });
@@ -142,7 +159,7 @@
   function layout(page) {
     if (io) io.disconnect();
     rendered.forEach(r => { try { r.task && r.task.cancel(); } catch (e) {} });
-    rendered.clear();
+    rendered.clear(); visible.clear(); pending.clear();
     pagesEl.innerHTML = ''; els = [];
     lastW = scroller.clientWidth;
     const avail = Math.max(200, lastW - 16);
@@ -154,22 +171,38 @@
       const d = document.createElement('div');
       d.className = 'rd-page'; d.dataset.p = i;
       d.style.width = cssW + 'px'; d.style.height = h + 'px';
-      d.innerHTML = '<span class="rd-num">' + i + '</span>';
+      d.innerHTML = '<span class="rd-num">' + i + '<small>Loading...</small></span>';
       frag.appendChild(d); els.push(d);
     }
     pagesEl.appendChild(frag);
     io = new IntersectionObserver(entries => {
       entries.forEach(e => {
         const p = +e.target.dataset.p;
-        if (e.isIntersecting) renderPage(p); else releasePage(p);
+        if (e.isIntersecting) { visible.add(p); if (!rendered.has(p)) pending.add(p); }
+        else { visible.delete(p); pending.delete(p); releasePage(p); }
       });
-    }, { root: scroller, rootMargin: '1500px 0px' });
+      pump();
+    }, { root: scroller, rootMargin: '500px 0px' });
     els.forEach(e => io.observe(e));
     gotoPage(page);
   }
 
+  // one page at a time, always the one closest to what the reader is looking at
+  async function pump() {
+    if (busy) return;
+    busy = true;
+    try {
+      while (pending.size) {
+        let best = null, bd = Infinity;
+        pending.forEach(q => { const d = Math.abs(q - cur) + (q < cur ? 0.5 : 0); if (d < bd) { bd = d; best = q; } });
+        pending.delete(best);
+        if (!visible.has(best) || rendered.has(best)) continue;
+        await renderPage(best);
+      }
+    } finally { busy = false; }
+  }
+
   async function renderPage(p) {
-    if (rendered.has(p)) return;
     const rec = { task: null, canvas: null };
     rendered.set(p, rec);
     try {
@@ -179,7 +212,7 @@
       let s = (cssW / base.width) * dpr;
       let vp = page.getViewport({ scale: s });
       const area = vp.width * vp.height;
-      if (area > 12e6) { s *= Math.sqrt(12e6 / area); vp = page.getViewport({ scale: s }); }
+      if (area > 6e6) { s *= Math.sqrt(6e6 / area); vp = page.getViewport({ scale: s }); }
       const canvas = document.createElement('canvas');
       canvas.width = Math.floor(vp.width); canvas.height = Math.floor(vp.height);
       rec.canvas = canvas;
@@ -192,7 +225,6 @@
       if (Math.abs(el.offsetHeight - hh) > 2) el.style.height = hh + 'px';
       page.cleanup();
     } catch (err) {
-      if (err && err.name === 'RenderingCancelledException') return;
       if (rendered.get(p) === rec) rendered.delete(p);
     }
   }
@@ -255,7 +287,8 @@
     const name = file.name.replace(/\.pdf$/i, '');
     ls.set(K_PAGE, '1');
     const ok = await loadBlob(file, name, 1);   // opens right away
-    if (ok) dbPut({ blob: file, name: name }).catch(() => {}); // saved in background for next time
+    // saved in background for next time (after the file has been read into memory once)
+    if (ok) (lastReady || Promise.resolve()).then(() => dbPut({ blob: file, name: name })).catch(() => {});
   }
 
   // ---------- wire up ----------
