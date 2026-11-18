@@ -19,3 +19,9 @@
 
 ## HTML update karna
 `www/index.html` edit karein, phir `npx cap sync android` (ya GitHub par push) aur dobara build.
+
+## Quran Pak (PDF reader)
+- Home screen par "Quran Pak" card se reader khulta hai.
+- Pehli baar "PDF select karein" se apni Quran PDF chunein. Wo app ke andar save ho jati hai (offline).
+- Aakhri parha hua page yaad rehta hai. Zoom, night mode, "go to page" aur PDF badalne ke buttons upar bar mein hain.
+- (Optional) PDF ko `www/quran.pdf` naam se rakh dein to wo app ke sath hi bundle ho jayegi.
