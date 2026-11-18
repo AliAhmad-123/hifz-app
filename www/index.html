@@ -1,0 +1,2414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Hifz Tracker · Quran Memorization</title>
+  <link rel="stylesheet" href="libs/fa/css/all.min.css">
+  <script>
+    (function(){
+      try {
+        var n = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+        var m = window.matchMedia && window.matchMedia('(max-width: 800px), (hover: none) and (pointer: coarse)').matches;
+        if (n || m) document.documentElement.classList.add('lite');
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    /* ===== THEME VARIABLES ===== */
+    :root {
+      --bg-body: #f0f9f4;
+      --bg-body-2: #e8f5ee;
+      --bg-app: #ffffff;
+      --bg-soft: #f4fbf7;
+      --bg-softer: #ecf8f1;
+      --bg-card: #ffffff;
+      --border-main: #d4ede0;
+      --border-soft: #c8e6d7;
+      --border-light: #e3f3ea;
+      --accent: #0d9488;
+      --accent-2: #14b8a6;
+      --accent-3: #2dd4bf;
+      --accent-rgb: 20, 184, 166;
+      --accent3-rgb: 45, 212, 191;
+      --accent-hover: #0f766e;
+      --accent-mid: #14b8a6;
+      --accent-light: #ccfbf1;
+      --accent-lighter: #f0fdfa;
+      --text-main: #042f2e;
+      --text-mid: #134e4a;
+      --text-soft: #3d6b60;
+      --text-muted: #5e8a7d;
+      --text-faint: #8bb5a6;
+      --gold: #f59e0b;
+      --gold-hover: #d97706;
+      --gold-bg: #fef3c7;
+      --gold-text: #92400e;
+      --purple: #a855f7;
+      --danger: #ef4444;
+      --danger-bg: #fee2e2;
+      --shadow-app: 0 25px 50px -12px rgba(13, 148, 136, 0.15), 0 0 0 1px rgba(13, 148, 136, 0.05);
+      --shadow-card: 0 4px 12px -2px rgba(13, 148, 136, 0.08);
+      --shadow-btn: 0 10px 25px -5px rgba(var(--accent-rgb), 0.4);
+      --chart-line: #14b8a6;
+      --chart-bar: #0d9488;
+      --chart-grid: #d4ede0;
+      --pattern-color: #0d9488;
+      --pattern-opacity: 0.05;
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.theme-sunset {
+      --bg-body: #fff7f0; --bg-body-2: #ffefe5; --bg-soft: #fffaf5; --bg-softer: #fff3ea; --bg-card: #ffffff;
+      --border-main: #fdd9b8; --border-soft: #fccfa6; --border-light: #fee8d4;
+      --accent: #ea580c; --accent-2: #f97316; --accent-3: #fb923c;
+      --accent-rgb: 249, 115, 22; --accent3-rgb: 251, 146, 60;
+      --accent-hover: #c2410c; --accent-mid: #f97316; --accent-light: #ffedd5; --accent-lighter: #fff7ed;
+      --text-main: #431407; --text-mid: #7c2d12; --text-soft: #9a3412; --text-muted: #c2410c; --text-faint: #d8a48a;
+      --shadow-app: 0 25px 50px -12px rgba(234, 88, 12, 0.15), 0 0 0 1px rgba(234, 88, 12, 0.05);
+      --shadow-card: 0 4px 12px -2px rgba(234, 88, 12, 0.08);
+      --shadow-btn: 0 10px 25px -5px rgba(var(--accent-rgb), 0.4);
+      --chart-line: #f97316; --chart-bar: #ea580c; --chart-grid: #fdd9b8; --pattern-color: #ea580c;
+    }
+
+    body.theme-cosmic {
+      --bg-body: #0f0a1f; --bg-body-2: #1a1035; --bg-app: #17102b; --bg-soft: #1f1738; --bg-softer: #1a132f; --bg-card: #241a42;
+      --border-main: #3d2d63; --border-soft: #33254f; --border-light: #3a2a5c;
+      --accent: #a855f7; --accent-2: #c084fc; --accent-3: #d8b4fe;
+      --accent-rgb: 192, 132, 252; --accent3-rgb: 216, 180, 254;
+      --accent-hover: #9333ea; --accent-mid: #c084fc; --accent-light: #3b1d6b; --accent-lighter: #2a1250;
+      --text-main: #faf5ff; --text-mid: #f3e8ff; --text-soft: #d8b4fe; --text-muted: #c084fc; --text-faint: #7c5ba6;
+      --shadow-app: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(168, 85, 247, 0.1);
+      --shadow-card: 0 4px 12px -2px rgba(0, 0, 0, 0.3);
+      --shadow-btn: 0 10px 25px -5px rgba(var(--accent-rgb), 0.4);
+      --chart-line: #c084fc; --chart-bar: #a855f7; --chart-grid: #3d2d63; --pattern-color: #c084fc; --pattern-opacity: 0.06;
+    }
+
+    body.theme-ocean {
+      --bg-body: #f0f9ff; --bg-body-2: #e0f2fe; --bg-soft: #f5fafe; --bg-softer: #eaf6fe; --bg-card: #ffffff;
+      --border-main: #bae6fd; --border-soft: #a5dffb; --border-light: #d4eefc;
+      --accent: #0284c7; --accent-2: #0ea5e9; --accent-3: #38bdf8;
+      --accent-rgb: 14, 165, 233; --accent3-rgb: 56, 189, 248;
+      --accent-hover: #0369a1; --accent-mid: #0ea5e9; --accent-light: #e0f2fe; --accent-lighter: #f0f9ff;
+      --text-main: #082f49; --text-mid: #0c4a6e; --text-soft: #0e7490; --text-muted: #0369a1; --text-faint: #7eb8d4;
+      --shadow-app: 0 25px 50px -12px rgba(2, 132, 199, 0.15), 0 0 0 1px rgba(2, 132, 199, 0.05);
+      --shadow-card: 0 4px 12px -2px rgba(2, 132, 199, 0.08);
+      --shadow-btn: 0 10px 25px -5px rgba(var(--accent-rgb), 0.4);
+      --chart-line: #0ea5e9; --chart-bar: #0284c7; --chart-grid: #bae6fd; --pattern-color: #0284c7;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: linear-gradient(135deg, var(--bg-body) 0%, var(--bg-body-2) 50%, var(--bg-body) 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 20s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 1.5rem;
+      transition: background 0.6s var(--smooth);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+    .orb { position: fixed; border-radius: 50%; filter: blur(60px); opacity: 0.4; pointer-events: none; z-index: 0; animation: floatOrb 15s ease-in-out infinite; }
+    .orb-1 { width: 300px; height: 300px; background: var(--accent-3); top: -100px; left: -100px; }
+    .orb-2 { width: 250px; height: 250px; background: var(--purple); bottom: -80px; right: -80px; animation-delay: -5s; }
+    .orb-3 { width: 200px; height: 200px; background: var(--accent-2); top: 50%; left: 50%; animation-delay: -10s; }
+
+    @keyframes floatOrb { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(60px, -40px) scale(1.1); } 66% { transform: translate(-40px, 60px) scale(0.9); } }
+
+    .islamic-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: var(--pattern-opacity); transition: opacity 0.6s; }
+    .islamic-bg svg { width: 100%; height: 100%; }
+    .islamic-bg .pattern-fill { fill: var(--pattern-color); transition: fill 0.6s; }
+    .islamic-bg .pattern-stroke { stroke: var(--pattern-color); fill: none; transition: stroke 0.6s; }
+
+    .app-container {
+      max-width: 1200px; width: 100%; background: var(--bg-app); border-radius: 2rem;
+      box-shadow: var(--shadow-app); padding: 2rem; border: 1px solid var(--border-main);
+      position: relative; z-index: 1; animation: containerIn 0.8s var(--spring) both;
+      transition: background 0.6s var(--smooth), border-color 0.6s var(--smooth);
+    }
+
+    @keyframes containerIn { from { opacity: 0; transform: translateY(40px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    header {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;
+      padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-main);
+      animation: fadeSlideDown 0.6s var(--spring) both;
+    }
+
+    @keyframes fadeSlideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .logo-icon {
+      background: linear-gradient(135deg, var(--accent), var(--accent-3)); color: white;
+      width: 3.2rem; height: 3.2rem; border-radius: 1rem;
+      display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+      box-shadow: var(--shadow-btn); animation: logoPulse 3s ease-in-out infinite; position: relative;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% { box-shadow: var(--shadow-btn), 0 0 0 0 rgba(var(--accent3-rgb), 0.4); }
+      50% { box-shadow: var(--shadow-btn), 0 0 0 15px rgba(var(--accent3-rgb), 0); }
+    }
+
+    h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-main); line-height: 1.2; transition: color 0.6s; }
+    h1 span { font-weight: 400; color: var(--text-muted); font-size: 0.85rem; display: block; margin-top: 0.15rem; }
+
+    .header-controls { margin-left: auto; display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+
+    .theme-picker {
+      display: flex; align-items: center; gap: 0.5rem; background: var(--bg-soft);
+      border: 1px solid var(--border-soft); padding: 0.4rem 0.9rem; border-radius: 2rem;
+      transition: all 0.3s var(--spring);
+    }
+    .theme-picker:hover { transform: translateY(-2px); box-shadow: var(--shadow-card); }
+    .theme-picker label { font-size: 0.72rem; font-weight: 600; color: var(--text-soft); display: flex; align-items: center; gap: 0.3rem; }
+    .theme-picker select {
+      background: var(--bg-app); border: 1px solid var(--border-soft); border-radius: 1rem;
+      padding: 0.3rem 0.6rem; font-size: 0.78rem; font-weight: 600; color: var(--text-main); outline: none; cursor: pointer;
+    }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+
+    .stat-card {
+      background: var(--bg-soft); border-radius: 1.2rem; padding: 1.1rem 1.3rem;
+      border: 1px solid var(--border-soft); box-shadow: var(--shadow-card);
+      display: flex; align-items: center; gap: 0.9rem; transition: all 0.4s var(--spring);
+      position: relative; overflow: hidden; animation: cardPop 0.6s var(--spring) both; cursor: default;
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes cardPop { from { opacity: 0; transform: scale(0.85) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+    .stat-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 40%, var(--accent-lighter) 100%); opacity: 0; transition: opacity 0.3s; }
+    .stat-card:hover { border-color: var(--accent-3); transform: translateY(-6px) scale(1.02); box-shadow: 0 15px 30px -10px rgba(var(--accent3-rgb), 0.3); }
+    .stat-card:hover::before { opacity: 1; }
+    .stat-card:hover .stat-icon { transform: rotate(360deg) scale(1.1); background: linear-gradient(135deg, var(--accent), var(--accent-3)); color: white; }
+
+    .stat-icon {
+      background: var(--accent-light); width: 2.8rem; height: 2.8rem; border-radius: 0.9rem;
+      display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 1.15rem;
+      transition: all 0.6s var(--spring); flex-shrink: 0; position: relative; z-index: 1;
+    }
+
+    .stat-info { display: flex; flex-direction: column; min-width: 0; position: relative; z-index: 1; }
+    .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-faint); font-weight: 600; }
+    .stat-value { font-size: 1.7rem; font-weight: 700; color: var(--text-main); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.3s; }
+
+    .section {
+      background: var(--bg-soft); border-radius: 1.4rem; padding: 1.5rem; margin-bottom: 1.5rem;
+      border: 1px solid var(--border-soft); transition: all 0.4s var(--smooth);
+      position: relative; overflow: hidden; animation: fadeSlideUp 0.6s var(--spring) both;
+    }
+
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    .section-title {
+      font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.6rem; transition: color 0.6s;
+    }
+
+    .section-title i {
+      background: linear-gradient(135deg, var(--accent), var(--accent-3)); color: white;
+      padding: 0.4rem; border-radius: 0.6rem; font-size: 0.8rem;
+      box-shadow: 0 4px 10px rgba(var(--accent3-rgb), 0.3); transition: transform 0.4s var(--spring);
+    }
+
+    .section-title:hover i { transform: rotate(-10deg) scale(1.15); }
+
+    .btn-daily {
+      background: linear-gradient(135deg, var(--accent), var(--accent-3)); border: none; color: white;
+      padding: 0.75rem 1.4rem; border-radius: 0.8rem; font-weight: 700; font-size: 0.88rem; cursor: pointer;
+      display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s var(--spring);
+      box-shadow: var(--shadow-btn); white-space: nowrap; position: relative; overflow: hidden;
+    }
+
+    .btn-daily:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 15px 30px -5px rgba(var(--accent-rgb), 0.5); }
+    .btn-daily:active { transform: translateY(0) scale(0.98); }
+
+    .daily-log {
+      margin-top: 0.9rem; background: var(--bg-app); border-radius: 0.9rem;
+      padding: 0.6rem 0.9rem; border: 1px solid var(--border-soft); max-height: 220px; overflow-y: auto;
+    }
+
+    .daily-log-item {
+      display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.2rem;
+      font-size: 0.85rem; border-bottom: 1px solid var(--border-light); color: var(--text-mid);
+      animation: logSlideIn 0.4s var(--spring) both; transition: background 0.2s; border-radius: 0.4rem;
+    }
+
+    .daily-log-item:hover { background: var(--bg-softer); padding-left: 0.5rem; }
+
+    @keyframes logSlideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
+    .daily-log-item:last-child { border-bottom: none; }
+
+    .daily-log-item .tag {
+      background: var(--accent-lighter); padding: 0.15rem 0.65rem; border-radius: 1rem;
+      font-size: 0.7rem; color: var(--accent); font-weight: 600; white-space: nowrap; transition: all 0.3s;
+    }
+
+    .daily-log-item .tag.past { background: var(--gold-bg); color: var(--gold-text); }
+
+    .daily-log-item .surah-num { color: var(--text-faint); font-size: 0.7rem; font-weight: 700; margin-right: 0.3rem; }
+    .daily-log-item .ayah-range { color: var(--text-faint); font-size: 0.72rem; font-weight: 500; margin-left: 0.35rem; }
+
+    .daily-empty { color: var(--text-faint); font-style: italic; font-size: 0.85rem; text-align: center; padding: 0.6rem; }
+
+    .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+
+    .progress-percent {
+      font-weight: 700; color: white; background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      padding: 0.3rem 0.9rem; border-radius: 2rem; font-size: 0.82rem;
+      box-shadow: var(--shadow-btn); transition: all 0.3s var(--spring);
+    }
+
+    .progress-bar-bg { height: 12px; background: var(--border-main); border-radius: 40px; overflow: hidden; margin-bottom: 1rem; position: relative; }
+
+    .progress-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-3), var(--accent));
+      background-size: 200% 100%; animation: shimmer 2s linear infinite; border-radius: 40px;
+      transition: width 1s var(--spring); position: relative;
+    }
+
+    @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+    .juz-list { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
+
+    .juz-badge {
+      position: relative; overflow: hidden;
+      background: var(--bg-app); border: 1.5px solid var(--border-main); color: var(--text-soft);
+      font-size: 0.72rem; font-weight: 600; padding: 0.3rem 0.85rem; border-radius: 2rem;
+      transition: all 0.3s var(--spring); cursor: pointer; user-select: none; z-index: 0;
+    }
+    .juz-badge::before {
+      content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: var(--progress, 0%);
+      background: linear-gradient(90deg, var(--accent), var(--accent-3)); opacity: 0.18; z-index: -1;
+      transition: width 1s var(--spring); border-radius: 2rem 0 0 2rem;
+    }
+    .juz-badge.has-progress { border-color: var(--accent-2); color: var(--accent); }
+    .juz-badge.completed {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: var(--accent);
+      color: white; animation: completedPulse 2s ease-in-out infinite;
+    }
+    .juz-badge.completed::before { opacity: 0; }
+    @keyframes completedPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.4); } 50% { box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0); } }
+    .juz-badge:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 15px -5px rgba(var(--accent-rgb), 0.3); border-color: var(--accent-2); }
+    .juz-badge.selected { outline: 2px solid var(--gold); outline-offset: 2px; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); }
+    .juz-badge .juz-label { position: relative; z-index: 1; }
+
+    .surah-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+
+    .filter-info {
+      font-size: 0.75rem; color: var(--gold-text); background: var(--gold-bg);
+      padding: 0.25rem 0.8rem; border-radius: 2rem; display: flex; align-items: center; gap: 0.4rem;
+      animation: popIn 0.3s var(--spring);
+    }
+
+    @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+    .surah-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.7rem; max-height: 500px; overflow-y: auto; padding-right: 0.3rem;
+    }
+
+    .surah-card {
+      background: var(--bg-app); border-radius: 0.9rem; padding: 0.8rem 1rem;
+      border: 1.5px solid var(--border-main); display: flex; flex-direction: column; gap: 0.35rem;
+      transition: all 0.4s var(--spring); position: relative; cursor: pointer;
+      transform-style: preserve-3d; perspective: 1000px;
+    }
+
+    .surah-card:hover {
+      border-color: var(--accent-2);
+      transform: translateY(-4px) rotateX(2deg) rotateY(-2deg) scale(1.02);
+      box-shadow: 0 15px 30px -10px rgba(var(--accent-rgb), 0.25);
+    }
+
+    .surah-card.completed {
+      background: linear-gradient(135deg, var(--accent-lighter), var(--bg-app));
+      border-color: var(--accent-2);
+    }
+
+    .surah-card.completed::after {
+      content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+      position: absolute; top: 0.5rem; right: 0.6rem; color: white; font-size: 0.65rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      width: 1.4rem; height: 1.4rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 10px rgba(var(--accent-rgb), 0.4);
+      animation: checkBounce 0.6s var(--spring);
+    }
+
+    @keyframes checkBounce { 0% { transform: scale(0); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+
+    .surah-name-card { font-weight: 700; color: var(--text-main); font-size: 0.92rem; padding-right: 1.6rem; }
+    .surah-name-card .surah-num { color: var(--text-faint); font-size: 0.68rem; font-weight: 700; margin-right: 0.3rem; }
+
+    .surah-meta { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-soft); }
+    .surah-meta .juz-tag { background: var(--bg-soft); padding: 0.12rem 0.5rem; border-radius: 1rem; font-weight: 600; }
+
+    .surah-progress-text { font-size: 0.7rem; font-weight: 600; color: var(--accent-2); }
+
+    .surah-progress-bar { height: 5px; background: var(--border-main); border-radius: 10px; overflow: hidden; margin-top: 0.15rem; }
+    .surah-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-2), var(--accent-3)); border-radius: 10px; width: 0%; transition: width 0.8s var(--spring); }
+
+    /* ===== INLINE LOG POPOVER ===== */
+    .surah-log-overlay {
+      position: fixed; inset: 0; background: rgba(4, 47, 46, 0.5);
+      backdrop-filter: blur(6px); z-index: 1500;
+      display: none; justify-content: center; align-items: center; padding: 1.5rem;
+    }
+    .surah-log-overlay.active { display: flex; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .surah-log-popover {
+      background: var(--bg-app); border-radius: 1.4rem; padding: 1.5rem;
+      width: 100%; max-width: 440px; border: 1.5px solid var(--accent-2);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+      animation: popoverIn 0.45s var(--spring);
+      max-height: 90vh; overflow-y: auto;
+    }
+    @keyframes popoverIn {
+      from { opacity: 0; transform: scale(0.85) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .popover-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border-light);
+    }
+    .popover-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
+    .popover-header h3 .surah-num { color: var(--text-faint); font-size: 0.8rem; font-weight: 700; margin-right: 0.4rem; }
+    .popover-header .meta { font-size: 0.75rem; color: var(--text-soft); margin-top: 0.2rem; }
+
+    .popover-close {
+      background: var(--bg-soft); border: 1px solid var(--border-soft); color: var(--text-soft);
+      width: 2rem; height: 2rem; border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 0.85rem;
+      transition: all 0.3s var(--spring); flex-shrink: 0;
+    }
+    .popover-close:hover { background: var(--danger-bg); color: var(--danger); transform: rotate(90deg); }
+
+    .popover-progress {
+      background: var(--bg-soft); border-radius: 0.8rem; padding: 0.7rem 0.9rem;
+      margin-bottom: 1rem; border: 1px solid var(--border-soft);
+    }
+    .popover-progress .label-row { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-soft); margin-bottom: 0.4rem; font-weight: 600; }
+    .popover-progress .label-row strong { color: var(--accent); }
+    .popover-progress .bar-bg { height: 8px; background: var(--border-main); border-radius: 20px; overflow: hidden; }
+    .popover-progress .bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-2), var(--accent-3)); border-radius: 20px; transition: width 0.6s var(--spring); }
+
+    .popover-form { display: flex; flex-direction: column; gap: 0.8rem; }
+
+    .popover-field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .popover-field label { font-size: 0.75rem; font-weight: 600; color: var(--text-soft); }
+
+    .popover-field .input-row { display: flex; align-items: center; gap: 0.5rem; }
+
+    .popover-field input[type="number"],
+    .popover-field input[type="date"] {
+      flex: 1; padding: 0.7rem 0.9rem; border-radius: 0.8rem;
+      border: 1.5px solid var(--border-soft); background: var(--bg-soft);
+      font-size: 0.9rem; font-weight: 600; color: var(--text-main); outline: none;
+      transition: all 0.3s var(--spring); min-width: 0;
+    }
+
+    .popover-field input:focus { border-color: var(--accent-2); box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.12); background: var(--bg-app); }
+
+    .range-hint {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.72rem; color: var(--text-faint); font-weight: 600;
+      background: var(--accent-lighter); padding: 0.4rem 0.7rem; border-radius: 0.6rem;
+      border: 1px dashed var(--border-soft);
+    }
+    .range-hint .range-badge { color: var(--accent); font-weight: 700; }
+
+    .quick-picks { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .quick-picks button {
+      background: var(--bg-soft); border: 1px solid var(--border-soft); color: var(--text-soft);
+      padding: 0.3rem 0.7rem; border-radius: 1rem; font-size: 0.72rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s var(--spring);
+    }
+    .quick-picks button:hover { background: var(--accent-lighter); border-color: var(--accent-2); color: var(--accent); transform: translateY(-2px); }
+
+    .popover-actions { display: flex; gap: 0.5rem; margin-top: 0.4rem; }
+
+    .btn-log-submit {
+      flex: 1; background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      border: none; color: white; padding: 0.85rem 1.2rem; border-radius: 0.8rem;
+      font-weight: 700; font-size: 0.9rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      transition: all 0.3s var(--spring); box-shadow: var(--shadow-btn);
+    }
+    .btn-log-submit:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 15px 30px -5px rgba(var(--accent-rgb), 0.5); }
+    .btn-log-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-log-cancel {
+      background: transparent; border: 1.5px solid var(--border-main); color: var(--text-soft);
+      padding: 0.85rem 1.2rem; border-radius: 0.8rem; font-weight: 600; font-size: 0.88rem;
+      cursor: pointer; transition: all 0.2s var(--spring);
+    }
+    .btn-log-cancel:hover { background: var(--bg-soft); border-color: var(--text-faint); }
+
+    .section-hint {
+      font-size: 0.75rem; color: var(--text-faint); font-style: italic;
+      margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.4rem;
+    }
+
+    .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.8rem; }
+
+    .chart-range-picker {
+      display: flex; align-items: center; gap: 0.5rem; background: var(--bg-app);
+      border: 1px solid var(--border-soft); padding: 0.3rem 0.7rem; border-radius: 2rem;
+      transition: all 0.3s var(--spring);
+    }
+    .chart-range-picker:hover { transform: translateY(-2px); box-shadow: var(--shadow-card); }
+    .chart-range-picker label { font-size: 0.7rem; font-weight: 600; color: var(--text-faint); }
+    .chart-range-picker select { background: transparent; border: none; font-size: 0.8rem; font-weight: 700; color: var(--accent); outline: none; cursor: pointer; padding: 0.15rem 0.2rem; }
+
+    .chart-canvas-wrap {
+      position: relative; width: 100%; height: 260px; background: var(--bg-app);
+      border-radius: 0.9rem; border: 1px solid var(--border-soft); padding: 0.5rem;
+      animation: chartIn 0.8s var(--spring);
+    }
+    @keyframes chartIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+    #progressChart { width: 100% !important; height: 100% !important; display: block; }
+
+    .chart-empty {
+      display: flex; align-items: center; justify-content: center; height: 100%;
+      color: var(--text-faint); font-style: italic; font-size: 0.85rem;
+      flex-direction: column; gap: 0.5rem; animation: floatIcon 2s ease-in-out infinite;
+    }
+    .chart-empty i { font-size: 1.8rem; opacity: 0.5; }
+
+    @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.8rem; }
+    .calendar-nav { display: flex; align-items: center; gap: 0.5rem; }
+
+    .calendar-nav button {
+      background: var(--bg-app); border: 1.5px solid var(--border-main); color: var(--accent);
+      width: 2.2rem; height: 2.2rem; border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s var(--spring); font-size: 0.82rem;
+    }
+    .calendar-nav button:hover { background: var(--accent); border-color: var(--accent); color: white; transform: scale(1.1) rotate(-10deg); box-shadow: var(--shadow-btn); }
+    .calendar-nav button:active { transform: scale(0.95); }
+
+    .calendar-month-label { font-weight: 700; color: var(--accent); font-size: 0.95rem; min-width: 130px; text-align: center; animation: fadeSlideDown 0.4s var(--spring); }
+
+    .calendar-legend { display: flex; gap: 1rem; font-size: 0.7rem; color: var(--text-soft); flex-wrap: wrap; margin-bottom: 0.7rem; }
+
+    .legend-dot { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; margin-right: 0.25rem; vertical-align: middle; }
+    .legend-dot.green { background: var(--accent-2); animation: legendPulse 2s ease-in-out infinite; }
+    @keyframes legendPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.4); } 50% { box-shadow: 0 0 0 5px rgba(var(--accent-rgb), 0); } }
+    .legend-dot.empty { background: var(--border-main); border: 1px solid var(--border-soft); }
+
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.35rem; }
+
+    .calendar-dow { text-align: center; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-faint); padding: 0.25rem 0; }
+
+    .calendar-day {
+      position: relative; aspect-ratio: 1 / 1; background: var(--bg-app);
+      border: 1.5px solid var(--border-light); border-radius: 0.6rem;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 600; color: var(--text-mid);
+      transition: all 0.3s var(--spring); cursor: default;
+      animation: dayIn 0.4s var(--spring) both;
+    }
+
+    @keyframes dayIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+
+    .calendar-day.empty { background: transparent; border-color: transparent; cursor: default; }
+
+    .calendar-day.has-memorization {
+      background: linear-gradient(135deg, var(--accent-lighter), var(--accent-light));
+      border-color: var(--accent-2); cursor: pointer;
+    }
+
+    .calendar-day.has-memorization:hover {
+      border-color: var(--accent); transform: scale(1.12) rotate(3deg);
+      box-shadow: 0 8px 20px -5px rgba(var(--accent-rgb), 0.4); z-index: 5;
+    }
+
+    .calendar-day.today { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25); animation: todayPulse 2s ease-in-out infinite; }
+    @keyframes todayPulse { 0%, 100% { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25); } 50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.1); } }
+
+    .calendar-day .day-number { font-size: 0.8rem; line-height: 1; }
+    .calendar-day .day-dot { width: 0.35rem; height: 0.35rem; border-radius: 50%; background: var(--accent-2); margin-top: 0.15rem; animation: dotPulse 1.5s ease-in-out infinite; }
+    @keyframes dotPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.7; } }
+
+    .day-hover-btn {
+      position: absolute; top: -1.9rem; left: 50%; transform: translateX(-50%) scale(0.8);
+      background: var(--accent); color: white; border: none; font-size: 0.6rem; font-weight: 700;
+      padding: 0.2rem 0.5rem; border-radius: 1rem; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: all 0.3s var(--spring); cursor: pointer;
+      z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .calendar-day.has-memorization:hover .day-hover-btn { opacity: 1; pointer-events: auto; transform: translateX(-50%) scale(1); }
+
+    .day-detail-popup {
+      position: fixed; background: var(--bg-card); border-radius: 1rem; padding: 1rem;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4); z-index: 2000; max-width: 300px;
+      min-width: 220px; border: 1.5px solid var(--accent-2); display: none;
+      animation: popupIn 0.35s var(--spring);
+    }
+    @keyframes popupIn { from { opacity: 0; transform: scale(0.85) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .day-detail-popup.active { display: block; }
+
+    .day-detail-popup h4 {
+      font-size: 0.82rem; color: var(--accent); margin-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-light); padding-bottom: 0.35rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .day-detail-popup .close-pop { background: none; border: none; color: var(--text-faint); cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+    .day-detail-popup .close-pop:hover { color: var(--danger); transform: rotate(90deg); }
+
+    .day-detail-popup .detail-item {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.8rem; padding: 0.3rem 0; color: var(--text-mid);
+      animation: logSlideIn 0.3s var(--spring) both;
+    }
+    .day-detail-popup .detail-item .ayahs-badge { background: var(--accent-lighter); color: var(--accent); padding: 0.1rem 0.55rem; border-radius: 1rem; font-size: 0.7rem; font-weight: 700; }
+
+    .records-header { display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0.5rem 0.8rem; flex-wrap: wrap; gap: 0.5rem; }
+    .btn-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+    .btn-outline {
+      background: transparent; border: 1.5px solid var(--border-main); color: var(--text-soft);
+      padding: 0.5rem 1rem; border-radius: 0.7rem; font-weight: 600; font-size: 0.78rem;
+      cursor: pointer; display: flex; align-items: center; gap: 0.4rem; transition: all 0.3s var(--spring);
+    }
+    .btn-outline:hover { background: var(--accent-lighter); border-color: var(--accent-2); color: var(--accent); transform: translateY(-2px); }
+
+    .btn-report {
+      background: linear-gradient(135deg, var(--gold), var(--gold-hover)); border: none; color: white;
+      padding: 0.5rem 1rem; border-radius: 0.7rem; font-weight: 700; font-size: 0.78rem;
+      cursor: pointer; display: flex; align-items: center; gap: 0.4rem;
+      transition: all 0.3s var(--spring); box-shadow: 0 6px 15px -3px rgba(245, 158, 11, 0.4);
+    }
+    .btn-report:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 25px -5px rgba(245, 158, 11, 0.5); }
+
+    .btn-export {
+      background: linear-gradient(135deg, var(--accent), var(--accent-3)); border: none; color: white;
+      padding: 0.5rem 1rem; border-radius: 0.7rem; font-weight: 700; font-size: 0.78rem;
+      cursor: pointer; display: flex; align-items: center; gap: 0.4rem;
+      transition: all 0.3s var(--spring); box-shadow: var(--shadow-btn);
+    }
+    .btn-export:hover { transform: translateY(-3px) scale(1.03); }
+
+    .btn-import {
+      background: transparent; border: 1.5px solid var(--accent-2); color: var(--accent-2);
+      padding: 0.5rem 1rem; border-radius: 0.7rem; font-weight: 600; font-size: 0.78rem;
+      cursor: pointer; display: flex; align-items: center; gap: 0.4rem; transition: all 0.3s var(--spring);
+    }
+    .btn-import:hover { background: var(--accent-lighter); transform: translateY(-2px); }
+
+    .btn-danger { background: transparent; border: none; color: var(--danger); padding: 0.25rem 0.5rem; border-radius: 0.5rem; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+    .btn-danger:hover { background: var(--danger-bg); transform: scale(1.15); }
+
+    .records-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 500px; }
+
+    .records-table th {
+      text-align: left; padding: 0.7rem 0.9rem; color: var(--text-faint); font-weight: 700;
+      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.6px;
+      border-bottom: 1px solid var(--border-main);
+    }
+
+    .records-table td { padding: 0.8rem 0.9rem; border-bottom: 1px solid var(--border-light); color: var(--text-mid); font-weight: 500; transition: all 0.2s; }
+    .records-table tr:last-child td { border-bottom: none; }
+    .records-table tr:hover td { background: var(--bg-softer); }
+    .records-table tr { animation: logSlideIn 0.4s var(--spring) both; }
+
+    .badge { background: var(--accent-lighter); padding: 0.15rem 0.6rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 600; color: var(--accent); }
+    .range-badge-cell { font-size: 0.72rem; color: var(--accent); font-weight: 600; background: var(--accent-lighter); padding: 0.1rem 0.5rem; border-radius: 1rem; display: inline-block; }
+
+    .empty-state { text-align: center; padding: 2rem 1rem; color: var(--text-faint); font-style: italic; }
+    .empty-state i { font-size: 1.8rem; margin-bottom: 0.4rem; opacity: 0.6; animation: floatIcon 2s ease-in-out infinite; }
+
+    .footer-note { margin-top: 1.5rem; text-align: center; font-size: 0.75rem; color: var(--text-faint); display: flex; justify-content: center; align-items: center; gap: 0.4rem; }
+    .footer-note .heart { color: var(--danger); animation: heartBeat 1.5s ease-in-out infinite; display: inline-block; }
+    @keyframes heartBeat { 0%, 100% { transform: scale(1); } 25% { transform: scale(1.25); } 50% { transform: scale(1); } 75% { transform: scale(1.2); } }
+
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(4, 47, 46, 0.6);
+      backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 1.5rem;
+    }
+    .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+
+    .modal-box {
+      background: var(--bg-app); border-radius: 1.5rem; width: 100%; max-width: 880px;
+      max-height: 92vh; display: flex; flex-direction: column;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4); overflow: hidden;
+      border: 1px solid var(--border-main); animation: modalIn 0.5s var(--spring);
+    }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.85) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+    .modal-head {
+      background: linear-gradient(135deg, var(--accent), var(--accent-3)); color: white;
+      padding: 1.2rem 1.6rem; display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.8rem;
+    }
+    .modal-head h2 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+
+    .modal-head .month-picker { display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); padding: 0.35rem 0.8rem; border-radius: 2rem; backdrop-filter: blur(4px); }
+    .modal-head .month-picker label { font-size: 0.75rem; opacity: 0.95; }
+    .modal-head .month-picker input { background: white; border: none; border-radius: 0.8rem; padding: 0.35rem 0.6rem; font-size: 0.8rem; font-weight: 700; color: var(--accent); outline: none; }
+
+    .modal-head-actions { display: flex; align-items: center; gap: 0.5rem; }
+
+    .btn-pdf {
+      background: white; color: var(--accent); border: none; padding: 0.5rem 1rem;
+      border-radius: 0.7rem; font-weight: 700; font-size: 0.78rem; cursor: pointer;
+      display: flex; align-items: center; gap: 0.4rem; transition: all 0.3s var(--spring);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .btn-pdf:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+    .btn-pdf:disabled { opacity: 0.7; cursor: wait; }
+
+    .modal-close {
+      background: rgba(255,255,255,0.2); border: none; color: white; width: 2.2rem; height: 2.2rem;
+      border-radius: 50%; cursor: pointer; font-size: 0.95rem; display: flex;
+      align-items: center; justify-content: center; transition: all 0.3s var(--spring);
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.4); transform: rotate(90deg); }
+
+    .modal-body { padding: 1.4rem 1.6rem 1.8rem; overflow-y: auto; }
+
+    .report-summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.8rem; margin-bottom: 1.4rem; }
+
+    .report-card {
+      background: var(--bg-soft); border: 1px solid var(--border-soft); border-radius: 1rem;
+      padding: 0.9rem 1rem; text-align: center; transition: all 0.4s var(--spring);
+      animation: cardPop 0.5s var(--spring) both;
+    }
+    .report-card:nth-child(1) { animation-delay: 0.1s; }
+    .report-card:nth-child(2) { animation-delay: 0.2s; }
+    .report-card:nth-child(3) { animation-delay: 0.3s; }
+    .report-card:hover { transform: translateY(-4px) scale(1.03); border-color: var(--accent-2); box-shadow: 0 12px 25px -5px rgba(var(--accent-rgb), 0.25); }
+    .report-card .rc-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-faint); font-weight: 700; margin-bottom: 0.25rem; }
+    .report-card .rc-value { font-size: 1.7rem; font-weight: 700; color: var(--accent); }
+
+    .report-table-wrap { border: 1px solid var(--border-main); border-radius: 1rem; overflow: hidden; margin-bottom: 1.4rem; }
+    .report-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .report-table th {
+      background: var(--bg-softer); text-align: left; padding: 0.7rem 0.9rem;
+      color: var(--accent-2); font-size: 0.65rem; text-transform: uppercase;
+      letter-spacing: 0.5px; font-weight: 700;
+    }
+    .report-table td { padding: 0.7rem 0.9rem; border-top: 1px solid var(--border-light); color: var(--text-mid); font-weight: 500; }
+    .report-table tr:hover td { background: var(--bg-soft); }
+    .report-table .num { font-weight: 700; color: var(--accent); }
+    .report-table .surah-num { color: var(--text-faint); font-size: 0.7rem; font-weight: 700; margin-right: 0.3rem; }
+
+    .report-empty { text-align: center; padding: 2rem 1rem; color: var(--text-faint); font-style: italic; }
+    .report-empty i { font-size: 1.8rem; display: block; margin-bottom: 0.4rem; opacity: 0.6; }
+
+    .modal-calendar-wrap { border-top: 1px solid var(--border-main); padding-top: 1.2rem; margin-top: 0.9rem; }
+    .modal-calendar-wrap h3 { font-size: 0.92rem; font-weight: 700; color: var(--accent); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+    .modal-calendar-wrap .calendar-grid { gap: 0.3rem; }
+    .modal-calendar-wrap .calendar-day { font-size: 0.75rem; border-radius: 0.5rem; }
+    .modal-calendar-wrap .day-hover-btn { display: none !important; }
+
+    #importFileInput { display: none; }
+
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(100px) scale(0.8);
+      background: linear-gradient(135deg, var(--accent), var(--accent-3)); color: white;
+      padding: 0.8rem 1.5rem; border-radius: 2rem; font-weight: 700; font-size: 0.85rem;
+      box-shadow: 0 20px 40px -10px rgba(var(--accent-rgb), 0.5); z-index: 3000;
+      opacity: 0; transition: all 0.5s var(--spring); display: flex; align-items: center;
+      gap: 0.5rem; pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+
+    #confettiCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 2500; }
+
+    .ripple { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.6); transform: scale(0); animation: rippleAnim 0.6s linear; pointer-events: none; }
+    @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-softer); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--accent-2), var(--accent-3)); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    @media (max-width: 700px) {
+      body { padding: 0.75rem; }
+      .app-container { padding: 1.1rem; border-radius: 1.5rem; }
+      h1 { font-size: 1.5rem; }
+      .stat-value { font-size: 1.4rem; }
+      .surah-grid { grid-template-columns: 1fr 1fr; }
+      .modal-head { flex-direction: column; align-items: flex-start; }
+      .calendar-day { font-size: 0.72rem; }
+      .header-controls { margin-left: 0; width: 100%; justify-content: flex-end; }
+      .orb { display: none; }
+    }
+
+    @media (max-width: 450px) {
+      .surah-grid { grid-template-columns: 1fr; }
+      .calendar-grid { gap: 0.15rem; }
+      .calendar-day { font-size: 0.65rem; border-radius: 0.4rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+  <style id="mobile-lite">
+    /* ===== MOBILE / APP MODE: fast + touch friendly (only when html.lite) ===== */
+    html { -webkit-tap-highlight-color: transparent; }
+    html.lite, html.lite body { overscroll-behavior-y: none; }
+    html.lite button, html.lite .surah-card, html.lite .juz-badge, html.lite .calendar-day { touch-action: manipulation; }
+
+    /* --- performance: no animations, blur, 3D, sticky hover --- */
+    html.lite *, html.lite *::before, html.lite *::after { animation: none !important; }
+    html.lite * { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+    html.lite .orb { display: none !important; }
+    html.lite body { background: var(--bg-body) !important; }
+    html.lite .surah-card { transform-style: flat; perspective: none; }
+    html.lite .stat-card:hover, html.lite .surah-card:hover, html.lite .juz-badge:hover,
+    html.lite .calendar-day.has-memorization:hover, html.lite .report-card:hover,
+    html.lite .btn-daily:hover, html.lite .btn-outline:hover, html.lite .btn-report:hover,
+    html.lite .btn-export:hover, html.lite .btn-import:hover, html.lite .btn-pdf:hover,
+    html.lite .btn-log-submit:hover, html.lite .theme-picker:hover, html.lite .chart-range-picker:hover,
+    html.lite .calendar-nav button:hover, html.lite .quick-picks button:hover, html.lite .section-title:hover i,
+    html.lite .stat-card:hover .stat-icon, html.lite .popover-close:hover, html.lite .modal-close:hover {
+      transform: none !important;
+    }
+    html.lite .stat-card, html.lite .section, html.lite .surah-card, html.lite .app-container { transition: none !important; }
+    html.lite .surah-card:active { background: var(--accent-lighter); }
+    html.lite .day-hover-btn { display: none !important; }
+
+    /* --- layout: full-width app, one page scroll --- */
+    html.lite body {
+      padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0) !important;
+      display: block;
+    }
+    html.lite .app-container {
+      max-width: none; border-radius: 0; border: none; box-shadow: none;
+      padding: 0.9rem 0.8rem 1.2rem;
+    }
+    html.lite header { margin-bottom: 1rem; padding-bottom: 0.9rem; gap: 0.7rem; }
+    html.lite .logo-icon { width: 2.6rem; height: 2.6rem; font-size: 1.2rem; border-radius: 0.8rem; }
+    html.lite h1 { font-size: 1.35rem; }
+    html.lite h1 span { font-size: 0.75rem; }
+    html.lite .header-controls { width: auto; margin-left: auto; }
+    html.lite .theme-picker { padding: 0.3rem 0.6rem; }
+    html.lite .theme-picker label { display: none; }
+    html.lite .theme-picker select { font-size: 0.85rem; padding: 0.4rem 0.6rem; }
+
+    html.lite .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+    html.lite .stat-card { flex-direction: column; text-align: center; padding: 0.7rem 0.4rem; gap: 0.35rem; border-radius: 1rem; }
+    html.lite .stat-icon { width: 2.1rem; height: 2.1rem; font-size: 0.95rem; border-radius: 0.7rem; }
+    html.lite .stat-label { font-size: 0.58rem; letter-spacing: 0.3px; }
+    html.lite .stat-value { font-size: 1.3rem; max-width: 100%; }
+    html.lite #lastSurah { font-size: 0.78rem !important; white-space: normal; line-height: 1.2; }
+
+    html.lite .section { padding: 0.9rem 0.8rem; border-radius: 1.1rem; margin-bottom: 0.9rem; }
+    html.lite .section-title { font-size: 0.95rem; }
+    html.lite .progress-header { gap: 0.5rem; }
+    html.lite .progress-header .section-title { font-size: 0.85rem; }
+    html.lite .juz-list { gap: 0.35rem; }
+    html.lite .juz-badge { padding: 0.45rem 0.7rem; font-size: 0.75rem; }
+
+    /* surah list: no nested scroll, 2 columns */
+    html.lite .surah-grid { max-height: none; overflow: visible; padding-right: 0; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    html.lite .surah-card { padding: 0.65rem 0.7rem; border-radius: 0.8rem; gap: 0.3rem; }
+    html.lite .surah-name-card { font-size: 0.85rem; padding-right: 1.3rem; }
+    html.lite .surah-meta { font-size: 0.68rem; }
+    html.lite .section-hint { font-size: 0.72rem; }
+
+    /* chart */
+    html.lite .chart-canvas-wrap { height: 220px; padding: 0.3rem; }
+    html.lite .chart-range-picker select { font-size: 0.85rem; }
+
+    /* calendar */
+    html.lite .calendar-nav button { width: 2.4rem; height: 2.4rem; }
+    html.lite #calTodayBtn { width: auto; height: 2.4rem; }
+    html.lite .calendar-month-label { min-width: 110px; font-size: 0.88rem; }
+    html.lite .calendar-grid { gap: 0.2rem; }
+    html.lite .calendar-day { border-radius: 0.5rem; font-size: 0.72rem; }
+
+    /* records: table becomes list of cards */
+    html.lite .records-header { padding: 0 0 0.7rem; }
+    html.lite .btn-group { width: 100%; gap: 0.4rem; }
+    html.lite .btn-group button { flex: 1 1 45%; justify-content: center; min-height: 2.6rem; font-size: 0.8rem; }
+    html.lite .records-table, html.lite .records-table tbody { display: block; min-width: 0; width: 100%; }
+    html.lite .records-table thead { display: none; }
+    html.lite .records-table tr {
+      display: grid; grid-template-columns: auto auto 1fr auto; column-gap: 0.5rem; row-gap: 0.3rem;
+      align-items: center; padding: 0.6rem 0.2rem; border-bottom: 1px solid var(--border-light);
+    }
+    html.lite .records-table td { display: block; padding: 0; border: none; background: none !important; font-size: 0.82rem; }
+    html.lite .records-table td:nth-child(1) { grid-column: 1 / 4; grid-row: 1; font-weight: 700; color: var(--text-main); }
+    html.lite .records-table td:nth-child(2) { grid-column: 1; grid-row: 2; }
+    html.lite .records-table td:nth-child(3) { grid-column: 2; grid-row: 2; }
+    html.lite .records-table td:nth-child(4) { grid-column: 3; grid-row: 2; justify-self: end; color: var(--text-faint); font-size: 0.72rem; }
+    html.lite .records-table td:nth-child(5) { grid-column: 4; grid-row: 1 / span 2; align-self: center; }
+    html.lite .records-table .btn-danger { font-size: 1rem; padding: 0.7rem 0.8rem; }
+
+    /* daily log */
+    html.lite .daily-log { max-height: 260px; -webkit-overflow-scrolling: touch; }
+    html.lite .daily-log-item { font-size: 0.8rem; padding: 0.55rem 0.2rem; gap: 0.4rem; }
+
+    /* log popup -> bottom sheet */
+    html.lite .surah-log-overlay { align-items: flex-end; padding: 0; }
+    html.lite .surah-log-popover {
+      max-width: none; border-radius: 1.4rem 1.4rem 0 0; border-bottom: none;
+      padding: 1.2rem 1rem calc(1.2rem + env(safe-area-inset-bottom, 0px)); max-height: 92vh;
+    }
+    html.lite .popover-field input[type="number"], html.lite .popover-field input[type="date"] { font-size: 1rem; padding: 0.8rem 0.9rem; }
+    html.lite .quick-picks button { padding: 0.55rem 0.9rem; font-size: 0.8rem; }
+    html.lite .btn-log-submit, html.lite .btn-log-cancel { min-height: 3rem; }
+
+    /* report -> full screen */
+    html.lite .modal-overlay { padding: 0; align-items: stretch; }
+    html.lite .modal-box { max-width: none; width: 100%; height: 100%; max-height: 100%; border-radius: 0; border: none; }
+    html.lite .modal-head { padding: calc(0.9rem + env(safe-area-inset-top, 0px)) 1rem 0.9rem; flex-direction: row; flex-wrap: wrap; align-items: center; }
+    html.lite .modal-head h2 { font-size: 1rem; }
+    html.lite .modal-head-actions { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+    html.lite .btn-pdf { min-height: 2.5rem; }
+    html.lite .modal-body { padding: 1rem 0.8rem calc(1.4rem + env(safe-area-inset-bottom, 0px)); -webkit-overflow-scrolling: touch; }
+    html.lite .report-summary-cards { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+    html.lite .report-card { padding: 0.6rem 0.3rem; }
+    html.lite .report-card .rc-label { font-size: 0.55rem; }
+    html.lite .report-card .rc-value { font-size: 1.3rem; }
+    html.lite .report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    html.lite .report-table { min-width: 560px; }
+
+    html.lite .day-detail-popup { max-width: calc(100vw - 20px); }
+    html.lite .toast { bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px)); max-width: 92vw; text-align: center; }
+    html.lite .footer-note { font-size: 0.7rem; }
+  </style>
+</head>
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="islamic-bg" aria-hidden="true">
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="islamicPattern" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+          <polygon class="pattern-stroke" stroke-width="1.2" points="30,4 90,4 116,30 116,90 90,116 30,116 4,90 4,30" />
+          <polygon class="pattern-stroke" stroke-width="1" points="60,22 98,60 60,98 22,60" />
+          <polygon class="pattern-fill" opacity="0.55" points="60,36 84,60 60,84 36,60" />
+          <circle class="pattern-fill" cx="60" cy="60" r="3.2" />
+          <polygon class="pattern-fill" opacity="0.7" points="60,10 66,16 60,22 54,16" />
+          <polygon class="pattern-fill" opacity="0.7" points="110,60 104,66 98,60 104,54" />
+          <polygon class="pattern-fill" opacity="0.7" points="60,110 66,104 60,98 54,104" />
+          <polygon class="pattern-fill" opacity="0.7" points="10,60 16,54 22,60 16,66" />
+          <line class="pattern-stroke" stroke-width="0.8" x1="60" y1="22" x2="60" y2="10" />
+          <line class="pattern-stroke" stroke-width="0.8" x1="98" y1="60" x2="110" y2="60" />
+          <line class="pattern-stroke" stroke-width="0.8" x1="60" y1="98" x2="60" y2="110" />
+          <line class="pattern-stroke" stroke-width="0.8" x1="22" y1="60" x2="10" y2="60" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#islamicPattern)" />
+    </svg>
+  </div>
+
+  <div class="app-container">
+    <header>
+      <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+      <h1>Hifz Tracker <span>Quran memorization companion</span></h1>
+      <div class="header-controls">
+        <div class="theme-picker">
+          <label for="themeSelect"><i class="fas fa-palette"></i> Theme</label>
+          <select id="themeSelect">
+            <option value="emerald">🌿 Emerald</option>
+            <option value="sunset">🌅 Sunset</option>
+            <option value="cosmic">✨ Cosmic</option>
+            <option value="ocean">🌊 Ocean</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Juz completed</span>
+          <span class="stat-value" id="juzCompleted">0</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-book"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Surahs memorized</span>
+          <span class="stat-value" id="surahCount">0</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-star"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Last surah</span>
+          <span class="stat-value" id="lastSurah" style="font-size: 1.1rem;">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="progress-header">
+        <div class="section-title" style="margin-bottom:0;"><i class="fas fa-chart-simple"></i> Overall progress (click juz to filter)</div>
+        <span class="progress-percent" id="progressPercent">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill" style="width: 0%;"></div>
+      </div>
+      <div class="juz-list" id="juzBadges"></div>
+    </div>
+
+    <div class="section">
+      <div class="surah-header">
+        <div class="section-title" style="margin-bottom:0;"><i class="fas fa-list-check"></i> Surah progress</div>
+        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <span class="filter-info" id="filterInfo" style="display:none;">
+            <i class="fas fa-filter"></i> <span id="filterText"></span>
+            <button class="btn-danger" id="clearFilterBtn" title="Clear filter"><i class="fas fa-xmark"></i></button>
+          </span>
+          <span style="font-size: 0.75rem; color: var(--text-faint);" id="surahProgressSummary">0 / 114 completed</span>
+        </div>
+      </div>
+      <div class="section-hint">
+        <i class="fas fa-hand-pointer"></i> Click any surah card to log memorization
+      </div>
+      <div class="surah-grid" id="surahGrid"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="fas fa-clock-rotate-left"></i> Memorization log</div>
+      <div class="daily-log" id="dailyLog">
+        <div class="daily-empty">No memorization logged yet. Click a surah above to start.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="chart-header">
+        <div class="section-title" style="margin-bottom:0;"><i class="fas fa-chart-column"></i> Memorization progress</div>
+        <div class="chart-range-picker">
+          <label for="chartRange"><i class="fas fa-calendar-week"></i> View:</label>
+          <select id="chartRange">
+            <option value="daily">Daily (last 14 days)</option>
+            <option value="weekly">Weekly (last 12 weeks)</option>
+            <option value="monthly" selected>Monthly (last 12 months)</option>
+            <option value="quarterly">Quarterly (last 8 quarters)</option>
+            <option value="yearly">Yearly (all years)</option>
+          </select>
+        </div>
+      </div>
+      <div class="chart-canvas-wrap">
+        <canvas id="progressChart"></canvas>
+        <div class="chart-empty" id="chartEmpty" style="display:none;">
+          <i class="fas fa-chart-simple"></i>
+          <span>No memorization data yet. Start logging above!</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="calendar-header">
+        <div class="section-title" style="margin-bottom:0;"><i class="fas fa-calendar-alt"></i> Memorization calendar</div>
+        <div class="calendar-nav">
+          <button id="calPrevBtn" title="Previous month"><i class="fas fa-chevron-left"></i></button>
+          <span class="calendar-month-label" id="calMonthLabel">—</span>
+          <button id="calNextBtn" title="Next month"><i class="fas fa-chevron-right"></i></button>
+          <button id="calTodayBtn" title="Go to current month" style="width:auto; padding:0 0.8rem; border-radius:1.5rem; font-size:0.7rem; font-weight:700; gap:0.25rem;">
+            <i class="fas fa-circle-dot"></i> Today
+          </button>
+        </div>
+      </div>
+      <div class="calendar-legend">
+        <span><span class="legend-dot green"></span> Memorization logged</span>
+        <span><span class="legend-dot empty"></span> No memorization</span>
+        <span><i class="fas fa-mouse-pointer" style="color:var(--text-faint);"></i> Tap a green day to view details</span>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+
+    <div class="section">
+      <div class="records-header">
+        <div class="section-title" style="margin-bottom:0;"><i class="fas fa-list"></i> All records</div>
+        <div class="btn-group">
+          <button class="btn-report" id="monthlyReportBtn"><i class="fas fa-file-lines"></i> Monthly Report</button>
+          <button class="btn-export" id="exportBtn"><i class="fas fa-download"></i> Export</button>
+          <button class="btn-import" id="importBtn"><i class="fas fa-upload"></i> Import</button>
+          <button class="btn-outline" id="resetBtn" style="font-size: 0.72rem; padding: 0.4rem 1rem;"><i class="fas fa-arrow-rotate-left"></i> Reset all</button>
+        </div>
+      </div>
+      <table class="records-table" id="recordsTable">
+        <thead>
+          <tr><th>Surah</th><th>Juz</th><th>Ayah range</th><th>Date</th><th></th></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div id="emptyMessage" class="empty-state" style="display: none;">
+        <i class="fas fa-book-quran"></i>
+        <p>No memorization records yet. Click a surah card above to start.</p>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <i class="fas fa-heart heart"></i> 
+      <span>Track your Hifz journey, one surah at a time.</span>
+    </div>
+  </div>
+
+  <input type="file" id="importFileInput" accept=".json,application/json">
+
+  <div class="surah-log-overlay" id="surahLogOverlay">
+    <div class="surah-log-popover" id="surahLogPopover">
+      <div class="popover-header">
+        <div>
+          <h3><span class="surah-num" id="popSurahNum">#—</span><span id="popSurahName">Surah</span></h3>
+          <div class="meta" id="popSurahMeta">Juz — · 0 / 0 ayahs</div>
+        </div>
+        <button class="popover-close" id="popoverCloseBtn"><i class="fas fa-xmark"></i></button>
+      </div>
+
+      <div class="popover-progress">
+        <div class="label-row"><span>Current progress</span><strong id="popProgressText">0%</strong></div>
+        <div class="bar-bg"><div class="bar-fill" id="popProgressFill" style="width:0%"></div></div>
+      </div>
+
+      <div class="popover-form">
+        <div class="popover-field">
+          <label>How many ayahs did you memorize?</label>
+          <div class="input-row">
+            <input type="number" id="popAyahInput" min="1" value="4" placeholder="e.g., 4">
+          </div>
+          <div class="quick-picks">
+            <button type="button" data-ayahs="1">+1</button>
+            <button type="button" data-ayahs="3">+3</button>
+            <button type="button" data-ayahs="5">+5</button>
+            <button type="button" data-ayahs="10">+10</button>
+            <button type="button" data-ayahs="20">+20</button>
+          </div>
+        </div>
+
+        <div class="range-hint" id="popRangeHint">
+          <span><i class="fas fa-arrow-right"></i> Will memorize:</span>
+          <span class="range-badge" id="popRangeText">—</span>
+        </div>
+
+        <div class="popover-field">
+          <label>Date</label>
+          <input type="date" id="popDateInput">
+        </div>
+
+        <div class="popover-actions">
+          <button class="btn-log-cancel" id="popCancelBtn">Cancel</button>
+          <button class="btn-log-submit" id="popSubmitBtn"><i class="fas fa-check"></i> Log memorization</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-detail-popup" id="dayDetailPopup">
+    <h4><span id="popupDate">—</span><button class="close-pop" id="closePopupBtn"><i class="fas fa-xmark"></i></button></h4>
+    <div id="popupContent"></div>
+  </div>
+
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2><i class="fas fa-file-lines"></i> Monthly Hifz Report</h2>
+        <div class="modal-head-actions">
+          <div class="month-picker">
+            <label for="reportMonth">Month:</label>
+            <input type="month" id="reportMonth">
+          </div>
+          <button class="btn-pdf" id="downloadPdfBtn"><i class="fas fa-file-arrow-down"></i> Download PDF</button>
+          <button class="modal-close" id="closeReportBtn"><i class="fas fa-xmark"></i></button>
+        </div>
+      </div>
+      <div class="modal-body" id="reportBodyContent">
+        <div class="report-summary-cards">
+          <div class="report-card"><div class="rc-label">Total ayahs memorized</div><div class="rc-value" id="reportTotalAyahs">0</div></div>
+          <div class="report-card"><div class="rc-label">Surahs touched</div><div class="rc-value" id="reportSurahCount">0</div></div>
+          <div class="report-card"><div class="rc-label">Days with hifz</div><div class="rc-value" id="reportDaysCount">0</div></div>
+        </div>
+        <div class="report-table-wrap">
+          <table class="report-table">
+            <thead>
+              <tr><th>Surah</th><th>Juz</th><th>Ayah ranges this month</th><th>Total memorized</th><th>Remaining</th><th>Status</th></tr>
+            </thead>
+            <tbody id="reportTableBody">
+              <tr><td colspan="6" class="report-empty"><i class="fas fa-moon"></i>Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-calendar-wrap">
+          <h3><i class="fas fa-calendar-alt"></i> Daily activity in this month</h3>
+          <div class="calendar-legend" style="margin-bottom:0.7rem;">
+            <span><span class="legend-dot green"></span> Memorization logged</span>
+            <span><span class="legend-dot empty"></span> No memorization</span>
+            <span><i class="fas fa-mouse-pointer" style="color:var(--text-faint);"></i> Click a green day for details</span>
+          </div>
+          <div class="calendar-grid" id="reportCalendarGrid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <canvas id="confettiCanvas"></canvas>
+
+  <script src="libs/chart.umd.js"></script>
+  <script src="libs/jspdf.umd.min.js"></script>
+  <script src="libs/jspdf.plugin.autotable.min.js"></script>
+  <script src="bridge.js"></script>
+
+  <script>
+    (function() {
+      // ---------- SURAH DATA (114) ----------
+      const SURAH_DATA = [
+        ["Al-Fatiha", 7, 1], ["Al-Baqarah", 286, 1], ["Aal-Imran", 200, 3], ["An-Nisa", 176, 4],
+        ["Al-Ma'idah", 120, 6], ["Al-An'am", 165, 7], ["Al-A'raf", 206, 8], ["Al-Anfal", 75, 9],
+        ["At-Tawbah", 129, 10], ["Yunus", 109, 11], ["Hud", 123, 11], ["Yusuf", 111, 12],
+        ["Ar-Ra'd", 43, 13], ["Ibrahim", 52, 13], ["Al-Hijr", 99, 14], ["An-Nahl", 128, 14],
+        ["Al-Isra", 111, 15], ["Al-Kahf", 110, 15], ["Maryam", 98, 16], ["Ta-Ha", 135, 16],
+        ["Al-Anbiya", 112, 17], ["Al-Hajj", 78, 17], ["Al-Mu'minun", 118, 18], ["An-Nur", 64, 18],
+        ["Al-Furqan", 77, 19], ["Ash-Shu'ara", 227, 19], ["An-Naml", 93, 19], ["Al-Qasas", 88, 20],
+        ["Al-Ankabut", 69, 20], ["Ar-Rum", 60, 21], ["Luqman", 34, 21], ["As-Sajdah", 30, 21],
+        ["Al-Ahzab", 73, 21], ["Saba", 54, 22], ["Fatir", 45, 22], ["Ya-Sin", 83, 22],
+        ["As-Saffat", 182, 23], ["Sad", 88, 23], ["Az-Zumar", 75, 23], ["Ghafir", 85, 24],
+        ["Fussilat", 54, 24], ["Ash-Shura", 53, 25], ["Az-Zukhruf", 89, 25], ["Ad-Dukhan", 59, 25],
+        ["Al-Jathiyah", 37, 25], ["Al-Ahqaf", 35, 26], ["Muhammad", 38, 26], ["Al-Fath", 29, 26],
+        ["Al-Hujurat", 18, 26], ["Qaf", 45, 26], ["Adh-Dhariyat", 60, 26], ["At-Tur", 49, 27],
+        ["An-Najm", 62, 27], ["Al-Qamar", 55, 27], ["Ar-Rahman", 78, 27], ["Al-Waqi'ah", 96, 27],
+        ["Al-Hadid", 29, 27], ["Al-Mujadila", 22, 28], ["Al-Hashr", 24, 28], ["Al-Mumtahanah", 13, 28],
+        ["As-Saff", 14, 28], ["Al-Jumu'ah", 11, 28], ["Al-Munafiqun", 11, 28], ["At-Taghabun", 18, 28],
+        ["At-Talaq", 12, 28], ["At-Tahrim", 12, 28], ["Al-Mulk", 30, 29], ["Al-Qalam", 52, 29],
+        ["Al-Haqqah", 52, 29], ["Al-Ma'arij", 44, 29], ["Nuh", 28, 29], ["Al-Jinn", 28, 29],
+        ["Al-Muzzammil", 20, 29], ["Al-Muddaththir", 56, 29], ["Al-Qiyamah", 40, 29], ["Al-Insan", 31, 29],
+        ["Al-Mursalat", 50, 29], ["An-Naba", 40, 30], ["An-Nazi'at", 46, 30], ["Abasa", 42, 30],
+        ["At-Takwir", 29, 30], ["Al-Infitar", 19, 30], ["Al-Mutaffifin", 36, 30], ["Al-Inshiqaq", 25, 30],
+        ["Al-Buruj", 22, 30], ["At-Tariq", 17, 30], ["Al-A'la", 19, 30], ["Al-Ghashiyah", 26, 30],
+        ["Al-Fajr", 30, 30], ["Al-Balad", 20, 30], ["Ash-Shams", 15, 30], ["Al-Layl", 21, 30],
+        ["Ad-Duha", 11, 30], ["Ash-Sharh", 8, 30], ["At-Tin", 8, 30], ["Al-Alaq", 19, 30],
+        ["Al-Qadr", 5, 30], ["Al-Bayyinah", 8, 30], ["Az-Zalzalah", 8, 30], ["Al-Adiyat", 11, 30],
+        ["Al-Qari'ah", 11, 30], ["At-Takathur", 8, 30], ["Al-Asr", 3, 30], ["Al-Humazah", 9, 30],
+        ["Al-Fil", 5, 30], ["Quraysh", 4, 30], ["Al-Ma'un", 7, 30], ["Al-Kawthar", 3, 30],
+        ["Al-Kafirun", 6, 30], ["An-Nasr", 3, 30], ["Al-Masad", 5, 30], ["Al-Ikhlas", 4, 30],
+        ["Al-Falaq", 5, 30], ["An-Nas", 6, 30]
+      ];
+
+      const TOTAL_QURAN_AYAHS = SURAH_DATA.reduce((sum, [, total]) => sum + total, 0);
+
+      const SURAH_MAP = {};
+      SURAH_DATA.forEach(([name, total, juz], idx) => {
+        SURAH_MAP[name] = { number: idx + 1, totalAyahs: total, juzStart: juz };
+      });
+
+      const JUZ_SURAH_MAP = {};
+      SURAH_DATA.forEach(([name, total, juz]) => {
+        if (!JUZ_SURAH_MAP[juz]) JUZ_SURAH_MAP[juz] = [];
+        JUZ_SURAH_MAP[juz].push(name);
+      });
+
+      // ---------- STORAGE ----------
+      const STORAGE_KEY_RECORDS = 'hifz_records_v3';
+      const STORAGE_KEY_SURAH_PROGRESS = 'hifz_surah_progress_v2';
+      const STORAGE_KEY_THEME = 'hifz_theme_v5';
+
+      function loadRecords() {
+        const stored = localStorage.getItem(STORAGE_KEY_RECORDS);
+        if (stored) { try { return JSON.parse(stored); } catch(e) {} }
+        return [
+          { id: 'r1', surah: 'Al-Fatiha', ayahFrom: 1, ayahTo: 7, date: '2025-01-10' },
+          { id: 'r2', surah: 'Al-Ikhlas', ayahFrom: 1, ayahTo: 4, date: '2025-01-12' },
+          { id: 'r3', surah: 'Al-Falaq', ayahFrom: 1, ayahTo: 5, date: '2025-01-12' },
+          { id: 'r4', surah: 'An-Nas', ayahFrom: 1, ayahTo: 6, date: '2025-01-12' },
+          { id: 'r5', surah: 'Al-Kawthar', ayahFrom: 1, ayahTo: 3, date: '2025-01-15' },
+          { id: 'r6', surah: 'Al-Asr', ayahFrom: 1, ayahTo: 3, date: '2025-01-15' },
+          { id: 'r7', surah: 'Al-Fil', ayahFrom: 1, ayahTo: 5, date: '2025-01-18' },
+          { id: 'r8', surah: 'Quraysh', ayahFrom: 1, ayahTo: 4, date: '2025-01-18' },
+          { id: 'r9', surah: "Al-Ma'un", ayahFrom: 1, ayahTo: 7, date: '2025-01-20' },
+          { id: 'r10', surah: 'Al-Kafirun', ayahFrom: 1, ayahTo: 6, date: '2025-01-20' },
+          { id: 'r11', surah: 'An-Nasr', ayahFrom: 1, ayahTo: 3, date: '2025-01-22' },
+          { id: 'r12', surah: 'Al-Masad', ayahFrom: 1, ayahTo: 5, date: '2025-01-22' },
+        ];
+      }
+
+      function loadSurahProgress() {
+        const stored = localStorage.getItem(STORAGE_KEY_SURAH_PROGRESS);
+        if (stored) { try { return JSON.parse(stored); } catch(e) {} }
+        return {};
+      }
+
+      function saveAll() {
+        localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(records));
+        localStorage.setItem(STORAGE_KEY_SURAH_PROGRESS, JSON.stringify(surahProgress));
+      }
+
+      // ---------- STATE ----------
+      let records = loadRecords();
+      let surahProgress = loadSurahProgress();
+      let selectedJuzFilter = null;
+      let calViewYear, calViewMonth;
+      let reportCalYear, reportCalMonth;
+      let chartInstance = null;
+      let chartRange = 'monthly';
+      let popoverSurah = null;
+
+      // ---------- RECOMPUTE PROGRESS FROM RECORDS ----------
+      // This is the FIX: always derive surahProgress from records.
+      function recomputeProgress() {
+        surahProgress = {};
+        records.forEach(r => {
+          const total = SURAH_MAP[r.surah]?.totalAyahs || 0;
+          if (!total) return;
+          const count = (r.ayahTo - r.ayahFrom + 1);
+          const prev = surahProgress[r.surah] || 0;
+          surahProgress[r.surah] = Math.min(prev + count, total);
+        });
+      }
+
+      // Build on load
+      if (records.length > 0) {
+        recomputeProgress();
+        saveAll();
+      }
+
+      // ---------- DOM ----------
+      const $ = id => document.getElementById(id);
+      const juzCompletedEl = $('juzCompleted'), surahCountEl = $('surahCount'), lastSurahEl = $('lastSurah');
+      const progressPercentEl = $('progressPercent'), progressFillEl = $('progressFill'), juzBadgesEl = $('juzBadges');
+      const surahGridEl = $('surahGrid'), surahProgressSummary = $('surahProgressSummary');
+      const filterInfo = $('filterInfo'), filterText = $('filterText'), clearFilterBtn = $('clearFilterBtn');
+      const dailyLogEl = $('dailyLog');
+      const tableBody = $('tableBody'), emptyMessage = $('emptyMessage'), recordsTable = $('recordsTable');
+      const resetBtn = $('resetBtn'), exportBtn = $('exportBtn'), importBtn = $('importBtn'), importFileInput = $('importFileInput');
+      const calendarGrid = $('calendarGrid'), calMonthLabel = $('calMonthLabel');
+      const calPrevBtn = $('calPrevBtn'), calNextBtn = $('calNextBtn'), calTodayBtn = $('calTodayBtn');
+      const dayDetailPopup = $('dayDetailPopup'), popupDate = $('popupDate'), popupContent = $('popupContent'), closePopupBtn = $('closePopupBtn');
+      const monthlyReportBtn = $('monthlyReportBtn'), reportModal = $('reportModal'), closeReportBtn = $('closeReportBtn');
+      const reportMonthInput = $('reportMonth'), reportTableBody = $('reportTableBody');
+      const reportTotalAyahs = $('reportTotalAyahs'), reportSurahCount = $('reportSurahCount'), reportDaysCount = $('reportDaysCount');
+      const reportCalendarGrid = $('reportCalendarGrid'), downloadPdfBtn = $('downloadPdfBtn');
+      const themeSelect = $('themeSelect'), chartRangeSelect = $('chartRange'), chartCanvas = $('progressChart'), chartEmpty = $('chartEmpty');
+      const toast = $('toast'), confettiCanvas = $('confettiCanvas');
+
+      const surahLogOverlay = $('surahLogOverlay');
+      const surahLogPopover = $('surahLogPopover');
+      const popSurahNum = $('popSurahNum'), popSurahName = $('popSurahName'), popSurahMeta = $('popSurahMeta');
+      const popProgressText = $('popProgressText'), popProgressFill = $('popProgressFill');
+      const popAyahInput = $('popAyahInput'), popDateInput = $('popDateInput');
+      const popRangeText = $('popRangeText'), popRangeHint = $('popRangeHint');
+      const popSubmitBtn = $('popSubmitBtn'), popCancelBtn = $('popCancelBtn'), popoverCloseBtn = $('popoverCloseBtn');
+
+      // ---------- CONFETTI ----------
+      const confettiCtx = confettiCanvas.getContext('2d');
+      let confettiParticles = [];
+      let confettiRAF = null;
+
+      function resizeConfetti() {
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resizeConfetti);
+      resizeConfetti();
+
+      function getThemeConfettiColors() {
+        const styles = getComputedStyle(document.body);
+        return [
+          styles.getPropertyValue('--accent').trim(),
+          styles.getPropertyValue('--accent-2').trim(),
+          styles.getPropertyValue('--accent-3').trim(),
+          styles.getPropertyValue('--gold').trim(),
+          styles.getPropertyValue('--accent-2').trim(),
+          styles.getPropertyValue('--accent-3').trim(),
+          styles.getPropertyValue('--accent').trim()
+        ];
+      }
+
+      function spawnConfetti(count = 80) {
+        const colors = getThemeConfettiColors();
+        for (let i = 0; i < count; i++) {
+          confettiParticles.push({
+            x: window.innerWidth / 2 + (Math.random() - 0.5) * 200,
+            y: window.innerHeight / 2,
+            vx: (Math.random() - 0.5) * 14,
+            vy: -Math.random() * 16 - 4,
+            size: Math.random() * 8 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 0.3,
+            gravity: 0.4, life: 1,
+            shape: Math.random() > 0.5 ? 'circle' : 'rect'
+          });
+        }
+        if (!confettiRAF) animateConfetti();
+      }
+
+      function animateConfetti() {
+        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        confettiParticles = confettiParticles.filter(p => p.life > 0 && p.y < window.innerHeight + 50);
+        confettiParticles.forEach(p => {
+          p.vy += p.gravity; p.x += p.vx; p.y += p.vy; p.vx *= 0.99;
+          p.rotation += p.rotSpeed; p.life -= 0.008;
+          confettiCtx.save();
+          confettiCtx.translate(p.x, p.y);
+          confettiCtx.rotate(p.rotation);
+          confettiCtx.globalAlpha = Math.max(0, p.life);
+          confettiCtx.fillStyle = p.color;
+          if (p.shape === 'circle') {
+            confettiCtx.beginPath();
+            confettiCtx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+            confettiCtx.fill();
+          } else {
+            confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          }
+          confettiCtx.restore();
+        });
+        if (confettiParticles.length > 0) confettiRAF = requestAnimationFrame(animateConfetti);
+        else { confettiRAF = null; confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height); }
+      }
+
+      function createRipple(e, el) {
+        const circle = document.createElement('span');
+        circle.classList.add('ripple');
+        const rect = el.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        circle.style.width = circle.style.height = size + 'px';
+        circle.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        circle.style.top = (e.clientY - rect.top - size / 2) + 'px';
+        el.appendChild(circle);
+        setTimeout(() => circle.remove(), 600);
+      }
+
+      function animateNumber(el, target, duration = 600) {
+        const start = parseInt(el.textContent, 10) || 0;
+        if (start === target) return;
+        const startTime = performance.now();
+        function tick(now) {
+          const progress = Math.min((now - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(start + (target - start) * eased);
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      function applyTheme(theme) {
+        document.body.classList.remove('theme-sunset', 'theme-cosmic', 'theme-ocean');
+        if (theme === 'sunset') document.body.classList.add('theme-sunset');
+        else if (theme === 'cosmic') document.body.classList.add('theme-cosmic');
+        else if (theme === 'ocean') document.body.classList.add('theme-ocean');
+        localStorage.setItem(STORAGE_KEY_THEME, theme);
+        themeSelect.value = theme;
+        setTimeout(() => { if (chartInstance) renderChart(); }, 100);
+      }
+
+      function initTheme() {
+        const saved = localStorage.getItem(STORAGE_KEY_THEME) || 'emerald';
+        applyTheme(saved);
+      }
+
+      let toastTimer = null;
+      function showToast(msg, icon = 'fa-check-circle', confetti = false) {
+        toast.innerHTML = `<i class="fas ${icon}"></i> ${msg}`;
+        toast.classList.add('show');
+        if (confetti) spawnConfetti(60);
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+      }
+
+      function getTodayDate() {
+        const today = new Date();
+        return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function getMemorizedAyahs(surahName) { return surahProgress[surahName] || 0; }
+
+      function isSurahComplete(surahName) {
+        const total = SURAH_MAP[surahName]?.totalAyahs || 0;
+        return total > 0 && getMemorizedAyahs(surahName) >= total;
+      }
+
+      function getTotalMemorizedAyahs() {
+        let total = 0;
+        SURAH_DATA.forEach(([name]) => { total += getMemorizedAyahs(name); });
+        return total;
+      }
+
+      function getOverallPercent() {
+        return TOTAL_QURAN_AYAHS > 0 ? Math.min(100, Math.round((getTotalMemorizedAyahs() / TOTAL_QURAN_AYAHS) * 100)) : 0;
+      }
+
+      function getJuzAyahProgress(juz) {
+        const surahs = JUZ_SURAH_MAP[juz] || [];
+        let totalAyahsInJuz = 0, memorizedInJuz = 0;
+        surahs.forEach(name => {
+          totalAyahsInJuz += SURAH_MAP[name].totalAyahs;
+          memorizedInJuz += getMemorizedAyahs(name);
+        });
+        return {
+          total: totalAyahsInJuz, memorized: memorizedInJuz,
+          percent: totalAyahsInJuz > 0 ? Math.min(100, (memorizedInJuz / totalAyahsInJuz) * 100) : 0,
+          isComplete: totalAyahsInJuz > 0 && memorizedInJuz >= totalAyahsInJuz
+        };
+      }
+
+      function getCompletedJuzList() {
+        const arr = [];
+        for (let juz = 1; juz <= 30; juz++) {
+          if (getJuzAyahProgress(juz).isComplete) arr.push(juz);
+        }
+        return arr;
+      }
+
+      function getLogsByDate() {
+        const map = {};
+        records.forEach(rec => {
+          if (!map[rec.date]) map[rec.date] = [];
+          map[rec.date].push(rec);
+        });
+        return map;
+      }
+
+      function getRecordsForDate(dateStr) {
+        return records.filter(r => r.date === dateStr);
+      }
+
+      // ---------- RENDER ----------
+      function renderAll() {
+        renderStats();
+        renderProgress();
+        renderFilterInfo();
+        renderSurahGrid();
+        renderDailyLog();
+        renderTable();
+        renderCalendar();
+        renderChart();
+      }
+
+      function renderStats() {
+        const completedJuz = getCompletedJuzList();
+        animateNumber(juzCompletedEl, completedJuz.length);
+        const completedSurahs = SURAH_DATA.filter(([name]) => isSurahComplete(name)).length;
+        animateNumber(surahCountEl, completedSurahs);
+        let last = '—';
+        if (records.length > 0) {
+          const sorted = [...records].sort((a, b) => {
+            if (a.date > b.date) return -1;
+            if (a.date < b.date) return 1;
+            return b.id.localeCompare(a.id);
+          });
+          last = sorted[0].surah;
+        }
+        lastSurahEl.textContent = last;
+      }
+
+      function renderProgress() {
+        const overallPercent = getOverallPercent();
+        progressPercentEl.textContent = overallPercent + '%';
+        progressFillEl.style.width = overallPercent + '%';
+
+        let html = '';
+        for (let i = 1; i <= 30; i++) {
+          const jp = getJuzAyahProgress(i);
+          const classes = ['juz-badge'];
+          if (jp.isComplete) classes.push('completed');
+          else if (jp.memorized > 0) classes.push('has-progress');
+          if (selectedJuzFilter === i) classes.push('selected');
+          html += `<span class="${classes.join(' ')}" data-juz="${i}" role="button" tabindex="0" style="--progress: ${jp.percent}%;" title="Juz ${i}: ${jp.memorized} / ${jp.total} ayahs (${Math.round(jp.percent)}%)"><span class="juz-label">Juz ${i}</span></span>`;
+        }
+        juzBadgesEl.innerHTML = html;
+
+        document.querySelectorAll('.juz-badge').forEach(badge => {
+          badge.addEventListener('click', (e) => {
+            createRipple(e, badge);
+            toggleJuzFilter(parseInt(badge.getAttribute('data-juz'), 10));
+          });
+        });
+      }
+
+      function toggleJuzFilter(juz) {
+        selectedJuzFilter = selectedJuzFilter === juz ? null : juz;
+        renderProgress();
+        renderFilterInfo();
+        renderSurahGrid();
+      }
+
+      function renderFilterInfo() {
+        if (selectedJuzFilter !== null) {
+          filterInfo.style.display = 'inline-flex';
+          filterText.textContent = `Juz ${selectedJuzFilter}`;
+        } else {
+          filterInfo.style.display = 'none';
+        }
+      }
+
+      function renderSurahGrid() {
+        let surahsToShow = SURAH_DATA;
+        if (selectedJuzFilter !== null) {
+          const names = JUZ_SURAH_MAP[selectedJuzFilter] || [];
+          surahsToShow = SURAH_DATA.filter(([name]) => names.includes(name));
+        }
+
+        let html = '';
+        surahsToShow.forEach(([name, totalAyahs, juzStart], idx) => {
+          const num = SURAH_MAP[name].number;
+          const memorized = getMemorizedAyahs(name);
+          const complete = memorized >= totalAyahs;
+          const percent = totalAyahs > 0 ? Math.min(100, Math.round((memorized / totalAyahs) * 100)) : 0;
+          html += `
+            <div class="surah-card ${complete ? 'completed' : ''}" data-surah="${escapeHtml(name)}" style="animation: cardPop 0.4s var(--spring) ${idx * 0.015}s both;">
+              <div class="surah-name-card"><span class="surah-num">#${num}</span>${escapeHtml(name)}</div>
+              <div class="surah-meta">
+                <span class="juz-tag">Juz ${juzStart}</span>
+                <span>${memorized} / ${totalAyahs}</span>
+              </div>
+              <div class="surah-progress-bar"><div class="surah-progress-fill" style="width: ${percent}%;"></div></div>
+              <div class="surah-progress-text">${percent}% complete</div>
+            </div>
+          `;
+        });
+        surahGridEl.innerHTML = html;
+
+        surahGridEl.querySelectorAll('.surah-card').forEach(card => {
+          card.addEventListener('click', () => {
+            openSurahPopover(card.getAttribute('data-surah'));
+          });
+        });
+
+        const totalCompletedAll = SURAH_DATA.filter(([name]) => isSurahComplete(name)).length;
+        surahProgressSummary.textContent = `${totalCompletedAll} / 114 completed`;
+      }
+
+      function renderDailyLog() {
+        if (records.length === 0) {
+          dailyLogEl.innerHTML = `<div class="daily-empty">No memorization logged yet. Click a surah above to start.</div>`;
+          return;
+        }
+        const todayStr = getTodayDate();
+        const sorted = [...records].sort((a, b) => {
+          if (a.date !== b.date) return b.date.localeCompare(a.date);
+          return b.id.localeCompare(a.id);
+        });
+        let html = '';
+        sorted.slice(0, 30).forEach((rec, idx) => {
+          const isPast = rec.date < todayStr;
+          const num = SURAH_MAP[rec.surah]?.number || '?';
+          const count = rec.ayahTo - rec.ayahFrom + 1;
+          html += `
+            <div class="daily-log-item" style="animation-delay:${idx * 0.02}s">
+              <span>
+                <span class="surah-num">#${num}</span>
+                <strong>${escapeHtml(rec.surah)}</strong>
+                <span class="ayah-range">(ayah ${rec.ayahFrom}–${rec.ayahTo} · ${count} ayah${count > 1 ? 's' : ''})</span>
+              </span>
+              <span class="tag ${isPast ? 'past' : ''}">${rec.date}${isPast ? ' (past)' : ''}</span>
+            </div>
+          `;
+        });
+        dailyLogEl.innerHTML = html;
+      }
+
+      function renderTable() {
+        if (records.length === 0) {
+          tableBody.innerHTML = '';
+          recordsTable.style.display = 'none';
+          emptyMessage.style.display = 'block';
+          return;
+        }
+        recordsTable.style.display = 'table';
+        emptyMessage.style.display = 'none';
+
+        const sorted = [...records].sort((a, b) => {
+          if (a.date !== b.date) return b.date.localeCompare(a.date);
+          return b.id.localeCompare(a.id);
+        });
+
+        let rowsHtml = '';
+        sorted.forEach((rec, idx) => {
+          const num = SURAH_MAP[rec.surah]?.number || '?';
+          const count = rec.ayahTo - rec.ayahFrom + 1;
+          rowsHtml += `
+            <tr style="animation-delay:${idx * 0.015}s">
+              <td><span style="color:var(--text-faint); font-size:0.7rem; font-weight:700; margin-right:0.3rem;">#${num}</span>${escapeHtml(rec.surah)}</td>
+              <td><span class="badge">Juz ${SURAH_MAP[rec.surah]?.juzStart || '?'}</span></td>
+              <td><span class="range-badge-cell">Ayah ${rec.ayahFrom}–${rec.ayahTo} (${count})</span></td>
+              <td>${rec.date}</td>
+              <td><button class="btn-danger" data-id="${rec.id}" title="Delete record"><i class="fas fa-trash-can"></i></button></td>
+            </tr>
+          `;
+        });
+        tableBody.innerHTML = rowsHtml;
+
+        document.querySelectorAll('.btn-danger[data-id]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            deleteRecord(id);
+          });
+        });
+      }
+
+      // ---------- POPOVER ----------
+      function openSurahPopover(surahName) {
+        const info = SURAH_MAP[surahName];
+        if (!info) return;
+        popoverSurah = surahName;
+        const memorized = getMemorizedAyahs(surahName);
+        const total = info.totalAyahs;
+        const percent = total > 0 ? Math.min(100, Math.round((memorized / total) * 100)) : 0;
+
+        popSurahNum.textContent = `#${info.number}`;
+        popSurahName.textContent = surahName;
+        popSurahMeta.textContent = `Juz ${info.juzStart} · ${memorized} / ${total} ayahs`;
+        popProgressText.textContent = percent + '%';
+        popProgressFill.style.width = percent + '%';
+
+        const remaining = total - memorized;
+        popAyahInput.value = Math.min(4, remaining) || 1;
+        popAyahInput.max = remaining;
+        popDateInput.value = getTodayDate();
+        popDateInput.max = getTodayDate();
+
+        updateRangeHint();
+
+        surahLogOverlay.classList.add('active');
+        setTimeout(() => { popAyahInput.focus(); popAyahInput.select(); }, 100);
+      }
+
+      function updateRangeHint() {
+        if (!popoverSurah) return;
+        const memorized = getMemorizedAyahs(popoverSurah);
+        const total = SURAH_MAP[popoverSurah].totalAyahs;
+        const remaining = total - memorized;
+        let ayahs = parseInt(popAyahInput.value, 10) || 0;
+        if (ayahs < 1) ayahs = 1;
+        if (ayahs > remaining) ayahs = remaining;
+
+        if (remaining <= 0) {
+          popRangeText.textContent = 'Complete — nothing to add';
+          popSubmitBtn.disabled = true;
+          return;
+        }
+
+        const from = memorized + 1;
+        const to = Math.min(memorized + ayahs, total);
+        popRangeText.textContent = `Ayah ${from} → ${to}`;
+        popSubmitBtn.disabled = false;
+      }
+
+      function closeSurahPopover() {
+        surahLogOverlay.classList.remove('active');
+        popoverSurah = null;
+      }
+
+      function submitLogFromPopover() {
+        if (!popoverSurah) return;
+        const surah = popoverSurah;
+        const total = SURAH_MAP[surah].totalAyahs;
+        const memorized = getMemorizedAyahs(surah);
+        const remaining = total - memorized;
+
+        let ayahs = parseInt(popAyahInput.value, 10) || 0;
+        const selectedDate = popDateInput.value || getTodayDate();
+
+        if (remaining <= 0) {
+          showToast(`This surah is already fully memorized.`, 'fa-info-circle');
+          return;
+        }
+        if (ayahs < 1) { showToast('Enter a valid number of ayahs.', 'fa-exclamation-circle'); return; }
+        if (ayahs > remaining) ayahs = remaining;
+
+        if (selectedDate > getTodayDate()) {
+          showToast('Cannot log future dates.', 'fa-exclamation-circle');
+          return;
+        }
+
+        const from = memorized + 1;
+        const to = memorized + ayahs;
+
+        records.push({
+          id: Date.now().toString() + Math.random().toString(36).substr(2, 6),
+          surah,
+          ayahFrom: from,
+          ayahTo: to,
+          date: selectedDate
+        });
+
+        recomputeProgress();
+        saveAll();
+        renderAll();
+
+        const wasComplete = isSurahComplete(surah);
+        showToast(`Logged ${surah} — ayah ${from}–${to} (${ayahs})`, 'fa-check-circle', wasComplete);
+        closeSurahPopover();
+
+        if (reportModal.classList.contains('active')) buildReport(reportMonthInput.value);
+      }
+
+      // ---------- DELETE (FIX) ----------
+      function deleteRecord(id) {
+        if (!confirm('Delete this record? Your surah progress will be updated accordingly.')) return;
+        records = records.filter(r => r.id !== id);
+        recomputeProgress();
+        saveAll();
+        renderAll();
+        showToast('Record deleted and progress updated', 'fa-trash-can');
+        if (reportModal.classList.contains('active')) buildReport(reportMonthInput.value);
+      }
+
+      function resetAll() {
+        if (!confirm('Reset ALL data? This cannot be undone.')) return;
+        records = [];
+        surahProgress = {};
+        selectedJuzFilter = null;
+        saveAll();
+        renderAll();
+        showToast('All data reset', 'fa-arrow-rotate-left');
+      }
+
+      // ---------- EXPORT / IMPORT ----------
+      function exportData() {
+        const data = { exportVersion: 2, exportedAt: new Date().toISOString(), records, surahProgress };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `hifz_tracker_backup_${getTodayDate()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Data exported successfully', 'fa-download');
+      }
+
+      function importData(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (!data || typeof data !== 'object') throw new Error('Invalid file');
+            if (!Array.isArray(data.records)) throw new Error('No valid records array');
+            if (!confirm('This will REPLACE your current data. Continue?')) return;
+
+            records = data.records.map(r => {
+              if (r.ayahFrom !== undefined && r.ayahTo !== undefined) return r;
+              const count = r.ayahsMemorized || r.ayahs || 1;
+              const total = SURAH_MAP[r.surah]?.totalAyahs || 0;
+              return {
+                id: r.id || Date.now().toString(),
+                surah: r.surah,
+                ayahFrom: 1,
+                ayahTo: Math.min(count, total || count),
+                date: r.date
+              };
+            });
+
+            recomputeProgress();
+            saveAll();
+            renderAll();
+            showToast('Data imported successfully', 'fa-upload');
+          } catch (err) {
+            alert('Failed to import: ' + (err.message || 'Invalid JSON'));
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      // ---------- CALENDAR ----------
+      function initCalendarView() {
+        const now = new Date();
+        calViewYear = now.getFullYear();
+        calViewMonth = now.getMonth();
+      }
+
+      function renderCalendar() { renderMainCalendar(); }
+
+      function renderMainCalendar() {
+        const logsByDate = getLogsByDate();
+        const todayStr = getTodayDate();
+        const firstDay = new Date(calViewYear, calViewMonth, 1);
+        const lastDay = new Date(calViewYear, calViewMonth + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startDow = firstDay.getDay();
+        const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        calMonthLabel.textContent = `${monthNames[calViewMonth]} ${calViewYear}`;
+
+        const dowLabels = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        let html = '';
+        dowLabels.forEach(d => { html += `<div class="calendar-dow">${d}</div>`; });
+        for (let i = 0; i < startDow; i++) html += `<div class="calendar-day empty"></div>`;
+
+        let dayIdx = 0;
+        for (let d = 1; d <= daysInMonth; d++) {
+          const dateStr = `${calViewYear}-${String(calViewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          const hasMem = logsByDate[dateStr] && logsByDate[dateStr].length > 0;
+          const isToday = dateStr === todayStr;
+          const classes = ['calendar-day'];
+          if (hasMem) classes.push('has-memorization');
+          if (isToday) classes.push('today');
+          html += `<div class="${classes.join(' ')}" data-date="${dateStr}" style="animation-delay:${dayIdx * 0.01}s">
+            <span class="day-number">${d}</span>
+            ${hasMem ? '<span class="day-dot"></span>' : ''}
+            ${hasMem ? `<button class="day-hover-btn" data-date="${dateStr}">View</button>` : ''}
+          </div>`;
+          dayIdx++;
+        }
+        calendarGrid.innerHTML = html;
+
+        calendarGrid.querySelectorAll('.calendar-day.has-memorization').forEach(dayEl => {
+          const dateStr = dayEl.getAttribute('data-date');
+          const btn = dayEl.querySelector('.day-hover-btn');
+          if (btn) btn.addEventListener('click', (e) => { e.stopPropagation(); showDayDetailPopup(dateStr, e.clientX, e.clientY); });
+          dayEl.addEventListener('click', (e) => {
+            if (e.target.classList.contains('day-hover-btn')) return;
+            showDayDetailPopup(dateStr, e.clientX, e.clientY);
+          });
+        });
+      }
+
+      function showDayDetailPopup(dateStr, x, y) {
+        const recs = getRecordsForDate(dateStr);
+        if (recs.length === 0) return;
+        popupDate.textContent = dateStr;
+        let contentHtml = '';
+        recs.forEach((rec, idx) => {
+          const num = SURAH_MAP[rec.surah]?.number || '?';
+          const count = rec.ayahTo - rec.ayahFrom + 1;
+          contentHtml += `
+            <div class="detail-item" style="animation-delay:${idx * 0.05}s">
+              <span><span style="color:var(--text-faint); font-size:0.65rem; font-weight:700; margin-right:0.3rem;">#${num}</span>${escapeHtml(rec.surah)} <span style="color:var(--text-faint); font-size:0.72rem;">(${rec.ayahFrom}–${rec.ayahTo})</span></span>
+              <span class="ayahs-badge">${count} ayah${count > 1 ? 's' : ''}</span>
+            </div>
+          `;
+        });
+        popupContent.innerHTML = contentHtml;
+        dayDetailPopup.classList.add('active');
+        const popupWidth = 300;
+        const popupHeight = dayDetailPopup.offsetHeight || 160;
+        let left = x + 10, top = y + 10;
+        if (left + popupWidth > window.innerWidth) left = window.innerWidth - popupWidth - 10;
+        if (top + popupHeight > window.innerHeight) top = window.innerHeight - popupHeight - 10;
+        if (left < 5) left = 5;
+        if (top < 5) top = 5;
+        dayDetailPopup.style.left = left + 'px';
+        dayDetailPopup.style.top = top + 'px';
+      }
+
+      function hideDayDetailPopup() { dayDetailPopup.classList.remove('active'); }
+
+      // ---------- CHART ----------
+      function getChartColors() {
+        const styles = getComputedStyle(document.body);
+        return {
+          line: styles.getPropertyValue('--chart-line').trim() || '#14b8a6',
+          bar: styles.getPropertyValue('--chart-bar').trim() || '#0d9488',
+          grid: styles.getPropertyValue('--chart-grid').trim() || '#d4ede0',
+          text: styles.getPropertyValue('--text-soft').trim() || '#3d6b60'
+        };
+      }
+
+      function buildChartData() {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const labels = [], values = [];
+        const recCount = r => r.ayahTo - r.ayahFrom + 1;
+
+        if (chartRange === 'daily') {
+          for (let i = 13; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(d.getDate() - i);
+            const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            const total = records.filter(l => l.date === dateStr).reduce((s,l) => s + recCount(l), 0);
+            labels.push(`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`);
+            values.push(total);
+          }
+        } else if (chartRange === 'weekly') {
+          for (let i = 11; i >= 0; i--) {
+            const weekEnd = new Date(today);
+            weekEnd.setDate(weekEnd.getDate() - (i * 7));
+            const weekStart = new Date(weekEnd);
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            const startStr = `${weekStart.getFullYear()}-${String(weekStart.getMonth()+1).padStart(2,'0')}-${String(weekStart.getDate()).padStart(2,'0')}`;
+            const endStr = `${weekEnd.getFullYear()}-${String(weekEnd.getMonth()+1).padStart(2,'0')}-${String(weekEnd.getDate()).padStart(2,'0')}`;
+            const total = records.filter(l => l.date >= startStr && l.date <= endStr).reduce((s,l) => s + recCount(l), 0);
+            labels.push(`${String(weekStart.getDate()).padStart(2,'0')}/${String(weekStart.getMonth()+1).padStart(2,'0')}`);
+            values.push(total);
+          }
+        } else if (chartRange === 'monthly') {
+          for (let i = 11; i >= 0; i--) {
+            const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+            const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0');
+            const prefix = `${y}-${m}`;
+            const total = records.filter(l => l.date && l.date.startsWith(prefix)).reduce((s,l) => s + recCount(l), 0);
+            const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            labels.push(`${monthNames[d.getMonth()]} ${String(y).slice(2)}`);
+            values.push(total);
+          }
+        } else if (chartRange === 'quarterly') {
+          const currentQ = Math.floor(today.getMonth() / 3);
+          const currentYear = today.getFullYear();
+          for (let i = 7; i >= 0; i--) {
+            let qIdx = currentQ - i, y = currentYear;
+            while (qIdx < 0) { qIdx += 4; y--; }
+            let total = 0;
+            for (let m = qIdx * 3; m <= qIdx * 3 + 2; m++) {
+              const prefix = `${y}-${String(m+1).padStart(2,'0')}`;
+              total += records.filter(l => l.date && l.date.startsWith(prefix)).reduce((s,l) => s + recCount(l), 0);
+            }
+            labels.push(`Q${qIdx+1} ${String(y).slice(2)}`);
+            values.push(total);
+          }
+        } else if (chartRange === 'yearly') {
+          const years = new Set();
+          records.forEach(l => { if (l.date) years.add(l.date.slice(0,4)); });
+          if (years.size === 0) years.add(String(today.getFullYear()));
+          Array.from(years).sort().forEach(y => {
+            const total = records.filter(l => l.date && l.date.startsWith(y)).reduce((s,l) => s + recCount(l), 0);
+            labels.push(y);
+            values.push(total);
+          });
+        }
+        return { labels, values };
+      }
+
+      function renderChart() {
+        if (typeof Chart === 'undefined') return;
+        const { labels, values } = buildChartData();
+        const hasData = values.some(v => v > 0);
+        if (!hasData) {
+          chartCanvas.style.display = 'none';
+          chartEmpty.style.display = 'flex';
+          if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+          return;
+        }
+        chartCanvas.style.display = 'block';
+        chartEmpty.style.display = 'none';
+        const colors = getChartColors();
+        if (chartInstance) chartInstance.destroy();
+        const ctx = chartCanvas.getContext('2d');
+        chartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Ayahs memorized',
+              data: values,
+              backgroundColor: (context) => {
+                const chart = context.chart;
+                const { ctx, chartArea } = chart;
+                if (!chartArea) return colors.bar;
+                const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                gradient.addColorStop(0, colors.bar);
+                gradient.addColorStop(1, colors.line);
+                return gradient;
+              },
+              borderColor: colors.line, borderWidth: 0, borderRadius: 8,
+              hoverBackgroundColor: colors.line, maxBarThickness: 40
+            }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            animation: { duration: document.documentElement.classList.contains('lite') ? 0 : 1200, easing: 'easeOutQuart' },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: colors.bar, titleFont: { size: 11, weight: 'bold' },
+                bodyFont: { size: 11 }, padding: 10, cornerRadius: 8, displayColors: false,
+                callbacks: { label: (ctx) => `${ctx.parsed.y} ayah(s)` }
+              }
+            },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: colors.text, font: { size: 9, weight: '600' }, maxRotation: 45, minRotation: 0 } },
+              y: { beginAtZero: true, grid: { color: colors.grid, drawBorder: false }, ticks: { color: colors.text, font: { size: 9, weight: '600' }, precision: 0 } }
+            }
+          }
+        });
+      }
+
+      // ---------- MONTHLY REPORT ----------
+      function openReportModal() {
+        const now = new Date();
+        const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        reportMonthInput.value = monthStr;
+        reportCalYear = now.getFullYear();
+        reportCalMonth = now.getMonth();
+        buildReport(monthStr);
+        reportModal.classList.add('active');
+      }
+
+      function closeReportModal() { reportModal.classList.remove('active'); }
+
+      function buildReport(monthStr) {
+        if (!monthStr) return;
+        const [yearStr, monthNumStr] = monthStr.split('-');
+        reportCalYear = parseInt(yearStr, 10);
+        reportCalMonth = parseInt(monthNumStr, 10) - 1;
+        const monthRecords = records.filter(r => r.date && r.date.startsWith(monthStr));
+
+        const surahMap = {};
+        const uniqueDates = new Set();
+        monthRecords.forEach(r => {
+          if (!surahMap[r.surah]) surahMap[r.surah] = { ranges: [], total: 0 };
+          surahMap[r.surah].ranges.push(`${r.ayahFrom}–${r.ayahTo}`);
+          surahMap[r.surah].total += (r.ayahTo - r.ayahFrom + 1);
+          uniqueDates.add(r.date);
+        });
+
+        const totalAyahsMonth = monthRecords.reduce((sum, r) => sum + (r.ayahTo - r.ayahFrom + 1), 0);
+        const surahsTouched = Object.keys(surahMap).length;
+        const daysWithHifz = uniqueDates.size;
+
+        animateNumber(reportTotalAyahs, totalAyahsMonth);
+        animateNumber(reportSurahCount, surahsTouched);
+        animateNumber(reportDaysCount, daysWithHifz);
+
+        if (surahsTouched === 0) {
+          reportTableBody.innerHTML = `<tr><td colspan="6" class="report-empty"><i class="fas fa-moon"></i>No memorization recorded for this month.</td></tr>`;
+        } else {
+          const orderedNames = SURAH_DATA.map(s => s[0]).filter(name => surahMap[name]);
+          let rows = '';
+          orderedNames.forEach(name => {
+            const num = SURAH_MAP[name].number;
+            const total = SURAH_MAP[name]?.totalAyahs || 0;
+            const juz = SURAH_MAP[name]?.juzStart || '?';
+            const monthData = surahMap[name];
+            const totalMemorized = getMemorizedAyahs(name);
+            const remaining = Math.max(0, total - totalMemorized);
+            const status = remaining === 0 ? '✅ Complete' : (totalMemorized > 0 ? '📖 In progress' : '—');
+            const rangesStr = monthData.ranges.join(', ');
+            rows += `<tr>
+              <td><span class="surah-num">#${num}</span>${escapeHtml(name)}</td>
+              <td><span class="badge">Juz ${juz}</span></td>
+              <td><span class="range-badge-cell">${rangesStr}</span> <span style="color:var(--text-faint); font-size:0.72rem; margin-left:0.3rem;">+${monthData.total}</span></td>
+              <td>${totalMemorized} / ${total}</td>
+              <td class="num">${remaining}</td>
+              <td>${status}</td>
+            </tr>`;
+          });
+          reportTableBody.innerHTML = rows;
+        }
+        renderReportCalendar();
+      }
+
+      function renderReportCalendar() {
+        const logsByDate = getLogsByDate();
+        const todayStr = getTodayDate();
+        const firstDay = new Date(reportCalYear, reportCalMonth, 1);
+        const lastDay = new Date(reportCalYear, reportCalMonth + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startDow = firstDay.getDay();
+        const dowLabels = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        let html = '';
+        dowLabels.forEach(d => { html += `<div class="calendar-dow">${d}</div>`; });
+        for (let i = 0; i < startDow; i++) html += `<div class="calendar-day empty"></div>`;
+
+        for (let d = 1; d <= daysInMonth; d++) {
+          const dateStr = `${reportCalYear}-${String(reportCalMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          const hasMem = logsByDate[dateStr] && logsByDate[dateStr].length > 0;
+          const isToday = dateStr === todayStr;
+          const classes = ['calendar-day'];
+          if (hasMem) classes.push('has-memorization');
+          if (isToday) classes.push('today');
+          html += `<div class="${classes.join(' ')}" data-date="${dateStr}">
+            <span class="day-number">${d}</span>${hasMem ? '<span class="day-dot"></span>' : ''}
+          </div>`;
+        }
+        reportCalendarGrid.innerHTML = html;
+        reportCalendarGrid.querySelectorAll('.calendar-day.has-memorization').forEach(dayEl => {
+          const dateStr = dayEl.getAttribute('data-date');
+          dayEl.addEventListener('click', (e) => showDayDetailPopup(dateStr, e.clientX, e.clientY));
+        });
+      }
+
+      // ---------- PDF ----------
+      function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r: 13, g: 148, b: 136 };
+      }
+
+      function downloadMonthlyReportPDF() {
+        if (!reportMonthInput.value) { showToast('Select a month first', 'fa-exclamation-circle'); return; }
+        const monthStr = reportMonthInput.value;
+        const [yearStr, monthNumStr] = monthStr.split('-');
+        const yearNum = parseInt(yearStr, 10), monthNum = parseInt(monthNumStr, 10);
+        const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        const monthLabel = `${monthNames[monthNum - 1]} ${yearNum}`;
+
+        if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
+          alert('PDF library not loaded.'); return;
+        }
+
+        const originalBtnHtml = downloadPdfBtn.innerHTML;
+        downloadPdfBtn.disabled = true;
+        downloadPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+          const styles = getComputedStyle(document.body);
+          const accentHex = styles.getPropertyValue('--accent').trim();
+          const rgb = hexToRgb(accentHex);
+
+          doc.setFillColor(rgb.r, rgb.g, rgb.b);
+          doc.rect(0, 0, 210, 26, 'F');
+          doc.setTextColor(255, 255, 255);
+          doc.setFontSize(18); doc.setFont('helvetica', 'bold');
+          doc.text('Hifz Tracker', 14, 12);
+          doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+          doc.text(`Monthly Hifz Report — ${monthLabel}`, 14, 19);
+          doc.setFontSize(8);
+          doc.text(`Generated: ${getTodayDate()}`, 196, 12, { align: 'right' });
+
+          const summaryY = 36, cardW = 58, cardH = 18, gap = 6, startX = 14;
+          const lightR = Math.min(255, rgb.r + 200);
+          const lightG = Math.min(255, rgb.g + 200);
+          const lightB = Math.min(255, rgb.b + 200);
+
+          const cards = [
+            { label: 'TOTAL AYAHS', value: reportTotalAyahs.textContent },
+            { label: 'SURAHS TOUCHED', value: reportSurahCount.textContent },
+            { label: 'DAYS WITH HIFZ', value: reportDaysCount.textContent }
+          ];
+          cards.forEach((card, i) => {
+            const x = startX + i * (cardW + gap);
+            doc.setFillColor(lightR, lightG, lightB);
+            doc.setDrawColor(rgb.r, rgb.g, rgb.b);
+            doc.roundedRect(x, summaryY, cardW, cardH, 3, 3, 'FD');
+            doc.setTextColor(rgb.r, rgb.g, rgb.b);
+            doc.setFontSize(7); doc.setFont('helvetica', 'bold');
+            doc.text(card.label, x + cardW / 2, summaryY + 6, { align: 'center' });
+            doc.setFontSize(14);
+            doc.text(String(card.value), x + cardW / 2, summaryY + 14, { align: 'center' });
+          });
+
+          const monthRecords = records.filter(r => r.date && r.date.startsWith(monthStr));
+          const surahMap = {};
+          monthRecords.forEach(r => {
+            if (!surahMap[r.surah]) surahMap[r.surah] = { ranges: [], total: 0 };
+            surahMap[r.surah].ranges.push(`${r.ayahFrom}–${r.ayahTo}`);
+            surahMap[r.surah].total += (r.ayahTo - r.ayahFrom + 1);
+          });
+          const orderedNames = SURAH_DATA.map(s => s[0]).filter(name => surahMap[name]);
+          let tableStartY = summaryY + cardH + 8;
+
+          if (orderedNames.length === 0) {
+            doc.setTextColor(134, 172, 150);
+            doc.setFontSize(11); doc.setFont('helvetica', 'italic');
+            doc.text('No memorization recorded for this month.', 105, tableStartY + 10, { align: 'center' });
+          } else {
+            const tableRows = orderedNames.map(name => {
+              const num = SURAH_MAP[name].number;
+              const total = SURAH_MAP[name]?.totalAyahs || 0;
+              const juz = SURAH_MAP[name]?.juzStart || '?';
+              const monthData = surahMap[name];
+              const totalMem = getMemorizedAyahs(name);
+              const remaining = Math.max(0, total - totalMem);
+              let status = '—';
+              if (remaining === 0) status = 'Complete';
+              else if (totalMem > 0) status = 'In progress';
+              return [`#${num} ${name}`, String(juz), monthData.ranges.join(', '), `${totalMem} / ${total}`, String(remaining), status];
+            });
+
+            doc.autoTable({
+              startY: tableStartY,
+              head: [['Surah', 'Juz', 'Ayah ranges this month', 'Total memorized', 'Remaining', 'Status']],
+              body: tableRows,
+              theme: 'grid',
+              styles: { fontSize: 8.5, cellPadding: 2.5, textColor: [25, 68, 52], lineColor: [lightR, lightG, lightB], lineWidth: 0.2, font: 'helvetica' },
+              headStyles: { fillColor: [lightR, lightG, lightB], textColor: [rgb.r, rgb.g, rgb.b], fontStyle: 'bold', fontSize: 7.5, halign: 'left' },
+              bodyStyles: { fontSize: 8.5 },
+              alternateRowStyles: { fillColor: [250, 255, 253] },
+              columnStyles: {
+                0: { cellWidth: 38, fontStyle: 'bold' },
+                1: { cellWidth: 14, halign: 'center' },
+                2: { cellWidth: 44 },
+                3: { cellWidth: 28, halign: 'center' },
+                4: { cellWidth: 22, halign: 'center', fontStyle: 'bold' },
+                5: { cellWidth: 28 }
+              },
+              margin: { left: 14, right: 14 }
+            });
+            tableStartY = doc.lastAutoTable.finalY + 10;
+          }
+
+          if (tableStartY > 230) { doc.addPage(); tableStartY = 20; }
+
+          doc.setTextColor(rgb.r, rgb.g, rgb.b);
+          doc.setFontSize(11); doc.setFont('helvetica', 'bold');
+          doc.text(`Daily activity in ${monthLabel}`, 14, tableStartY);
+          doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
+          doc.setTextColor(94, 127, 110);
+          doc.text('Colored cells indicate memorization was logged.', 14, tableStartY + 5);
+
+          const calTop = tableStartY + 10, calLeft = 14;
+          const cellW = (210 - 28) / 7, cellH = 12;
+          const dowNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+          doc.setFontSize(7); doc.setFont('helvetica', 'bold');
+          doc.setTextColor(134, 172, 150);
+          dowNames.forEach((d, i) => doc.text(d, calLeft + i * cellW + cellW / 2, calTop, { align: 'center' }));
+
+          const logsByDate = getLogsByDate();
+          const firstDay = new Date(yearNum, monthNum - 1, 1);
+          const lastDay = new Date(yearNum, monthNum, 0);
+          const daysInMonth = lastDay.getDate();
+          const startDow = firstDay.getDay();
+          const cells = [];
+          for (let i = 0; i < startDow; i++) cells.push(null);
+          for (let d = 1; d <= daysInMonth; d++) {
+            const dateStr = `${yearNum}-${String(monthNum).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const hasMem = logsByDate[dateStr] && logsByDate[dateStr].length > 0;
+            cells.push({ day: d, hasMem });
+          }
+
+          let rowY = calTop + 3, col = 0;
+          cells.forEach(cell => {
+            if (cell !== null) {
+              const x = calLeft + col * cellW;
+              if (cell.hasMem) { doc.setFillColor(lightR, lightG, lightB); doc.setDrawColor(rgb.r, rgb.g, rgb.b); }
+              else { doc.setFillColor(255, 255, 255); doc.setDrawColor(226, 247, 233); }
+              doc.roundedRect(x, rowY, cellW - 1.2, cellH - 1.2, 2, 2, 'FD');
+              doc.setTextColor(25, 68, 52); doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+              doc.text(String(cell.day), x + (cellW - 1.2) / 2, rowY + 5, { align: 'center' });
+              if (cell.hasMem) {
+                doc.setFillColor(rgb.r, rgb.g, rgb.b);
+                doc.circle(x + (cellW - 1.2) / 2, rowY + 8.5, 0.9, 'F');
+              }
+            }
+            col++;
+            if (col >= 7) { col = 0; rowY += cellH; }
+          });
+
+          const pageCount = doc.internal.getNumberOfPages();
+          for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(7); doc.setTextColor(155, 183, 168); doc.setFont('helvetica', 'normal');
+            doc.text('Hifz Tracker — Quran memorization companion', 105, 290, { align: 'center' });
+            doc.text(`Page ${i} of ${pageCount}`, 196, 290, { align: 'right' });
+          }
+
+          doc.save(`Hifz_Report_${monthStr}.pdf`);
+          downloadPdfBtn.disabled = false;
+          downloadPdfBtn.innerHTML = originalBtnHtml;
+          showToast('PDF downloaded!', 'fa-file-arrow-down', true);
+        } catch (err) {
+          console.error('PDF generation failed:', err);
+          alert('Could not generate PDF: ' + (err.message || err));
+          downloadPdfBtn.disabled = false;
+          downloadPdfBtn.innerHTML = originalBtnHtml;
+        }
+      }
+
+      // ---------- INIT ----------
+      function init() {
+        initTheme();
+        initCalendarView();
+        renderAll();
+
+        themeSelect.addEventListener('change', (e) => applyTheme(e.target.value));
+        chartRangeSelect.addEventListener('change', (e) => { chartRange = e.target.value; renderChart(); });
+
+        popAyahInput.addEventListener('input', updateRangeHint);
+        popSubmitBtn.addEventListener('click', submitLogFromPopover);
+        popCancelBtn.addEventListener('click', closeSurahPopover);
+        popoverCloseBtn.addEventListener('click', closeSurahPopover);
+        surahLogOverlay.addEventListener('click', (e) => { if (e.target === surahLogOverlay) closeSurahPopover(); });
+        popAyahInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') { e.preventDefault(); submitLogFromPopover(); }
+        });
+        document.querySelectorAll('.quick-picks button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const val = parseInt(btn.getAttribute('data-ayahs'), 10);
+            const current = parseInt(popAyahInput.value, 10) || 0;
+            popAyahInput.value = Math.max(1, current + val);
+            updateRangeHint();
+          });
+        });
+
+        resetBtn.addEventListener('click', resetAll);
+        exportBtn.addEventListener('click', (e) => { createRipple(e, exportBtn); exportData(); });
+        importBtn.addEventListener('click', () => importFileInput.click());
+        importFileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) importData(file);
+          e.target.value = '';
+        });
+
+        clearFilterBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectedJuzFilter = null;
+          renderProgress();
+          renderFilterInfo();
+          renderSurahGrid();
+        });
+
+        calPrevBtn.addEventListener('click', () => {
+          calViewMonth--;
+          if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
+          renderMainCalendar();
+        });
+        calNextBtn.addEventListener('click', () => {
+          calViewMonth++;
+          if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
+          renderMainCalendar();
+        });
+        calTodayBtn.addEventListener('click', () => {
+          const now = new Date();
+          calViewYear = now.getFullYear();
+          calViewMonth = now.getMonth();
+          renderMainCalendar();
+        });
+
+        closePopupBtn.addEventListener('click', hideDayDetailPopup);
+        document.addEventListener('click', (e) => {
+          if (!dayDetailPopup.contains(e.target) && !e.target.closest('.day-hover-btn') && !e.target.closest('.calendar-day.has-memorization')) {
+            hideDayDetailPopup();
+          }
+        });
+
+        monthlyReportBtn.addEventListener('click', (e) => { createRipple(e, monthlyReportBtn); openReportModal(); });
+        closeReportBtn.addEventListener('click', closeReportModal);
+        reportModal.addEventListener('click', (e) => { if (e.target === reportModal) closeReportModal(); });
+        reportMonthInput.addEventListener('change', (e) => buildReport(e.target.value));
+        downloadPdfBtn.addEventListener('click', downloadMonthlyReportPDF);
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            if (surahLogOverlay.classList.contains('active')) closeSurahPopover();
+            else if (reportModal.classList.contains('active')) closeReportModal();
+            hideDayDetailPopup();
+          }
+        });
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => { if (chartInstance) renderChart(); }, 200);
+        });
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
