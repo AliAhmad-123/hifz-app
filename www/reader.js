@@ -69,6 +69,10 @@
   // ---------- open / close ----------
   function isOpen() { return reader.classList.contains('open'); }
 
+  async function blobIsPdf(blob) {
+    try { return isPdf(await blob.slice(0, 5).arrayBuffer()); } catch (e) { return false; }
+  }
+
   async function openReader() {
     reader.classList.add('open');
     document.documentElement.classList.add('reader-open');
@@ -76,16 +80,17 @@
     show('rdLoading', true); show('rdEmpty', false);
     let rec = null;
     try { rec = await dbGet(); } catch (e) {}
-    let buf = rec && rec.buf, name = rec && rec.name;
-    if (!buf) { // optional: a PDF bundled inside the app as quran.pdf
+    let blob = rec && rec.blob, name = rec && rec.name;
+    if (!blob && rec && rec.buf) blob = new Blob([rec.buf], { type: 'application/pdf' });
+    if (!blob) { // optional: a PDF bundled inside the app as quran.pdf
       try {
         const r = await fetch('quran.pdf');
-        if (r.ok) { const b = await r.arrayBuffer(); if (isPdf(b)) { buf = b; name = 'Quran Pak'; } }
+        if (r.ok) { const b = await r.blob(); if (await blobIsPdf(b)) { blob = b; name = 'Quran Pak'; } }
       } catch (e) {}
     }
     show('rdLoading', false);
-    if (!buf) { show('rdEmpty', true); return; }
-    await loadBuffer(buf, name);
+    if (!blob) { show('rdEmpty', true); return; }
+    await loadBlob(blob, name);
   }
 
   function closeReader() {
@@ -96,11 +101,22 @@
   }
 
   // ---------- load ----------
-  async function loadBuffer(buf, name, startPage) {
+  // Read the PDF lazily from the Blob (only the parts that are needed), so even a
+  // 100+ MB file opens fast and does not fill the phone's memory.
+  async function makeSource(blob) {
+    const first = new Uint8Array(await blob.slice(0, Math.min(blob.size, 65536)).arrayBuffer());
+    const transport = new pdfjsLib.PDFDataRangeTransport(blob.size, first);
+    transport.requestDataRange = function (begin, end) {
+      blob.slice(begin, end).arrayBuffer().then(buf => transport.onDataRange(begin, new Uint8Array(buf)));
+    };
+    return { range: transport, disableAutoFetch: true, disableStream: true };
+  }
+
+  async function loadBlob(blob, name, startPage) {
     show('rdLoading', true); show('rdEmpty', false);
     try {
       if (pdf) { try { pdf.destroy(); } catch (e) {} pdf = null; }
-      pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+      pdf = await pdfjsLib.getDocument(await makeSource(blob)).promise;
       total = pdf.numPages;
       const p1 = await pdf.getPage(1);
       const vp = p1.getViewport({ scale: 1 });
@@ -110,6 +126,7 @@
       layout(start);
       show('rdLoading', false);
       refreshCard();
+      return true;
     } catch (err) {
       console.error(err);
       pdf = null;
@@ -117,6 +134,7 @@
       const m = $('rdEmptyMsg');
       if (m) m.textContent = 'Ye PDF open nahi ho saki. Doosri file select karein.';
       show('rdEmpty', true);
+      return false;
     }
   }
 
@@ -227,19 +245,17 @@
     e.target.value = '';
     if (!file) return;
     show('rdLoading', true); show('rdEmpty', false);
-    try {
-      const buf = await file.arrayBuffer();
-      if (!isPdf(buf)) throw new Error('not pdf');
-      const name = file.name.replace(/\.pdf$/i, '');
-      await dbPut({ buf: buf, name: name });
-      ls.set(K_PAGE, '1');
-      await loadBuffer(buf, name, 1);
-    } catch (err) {
+    if (!(await blobIsPdf(file))) {
       show('rdLoading', false);
       const m = $('rdEmptyMsg');
       if (m) m.textContent = 'Sahi PDF file select karein.';
       show('rdEmpty', !pdf);
+      return;
     }
+    const name = file.name.replace(/\.pdf$/i, '');
+    ls.set(K_PAGE, '1');
+    const ok = await loadBlob(file, name, 1);   // opens right away
+    if (ok) dbPut({ blob: file, name: name }).catch(() => {}); // saved in background for next time
   }
 
   // ---------- wire up ----------
