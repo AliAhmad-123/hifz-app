@@ -321,6 +321,8 @@
   const Cap = window.Capacitor, App = Cap && Cap.Plugins && Cap.Plugins.App;
   if (App && App.addListener) {
     App.addListener('backButton', () => {
+      const bk = $('bkOverlay');
+      if (bk && bk.classList.contains('open')) return $('bkClose').click();
       if (isOpen()) return closeReader();
       const pop = $('surahLogOverlay'), rep = $('reportModal');
       if (pop && pop.classList.contains('active')) return $('popoverCloseBtn').click();
