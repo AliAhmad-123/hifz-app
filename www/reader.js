@@ -327,6 +327,7 @@
       const pop = $('surahLogOverlay'), rep = $('reportModal');
       if (pop && pop.classList.contains('active')) return $('popoverCloseBtn').click();
       if (rep && rep.classList.contains('active')) return $('closeReportBtn').click();
+      if (window.hifzPager && window.hifzPager.index() === 1) return window.hifzPager.go(0);
       App.exitApp();
     });
   }
