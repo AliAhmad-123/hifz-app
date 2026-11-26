@@ -1,5 +1,10 @@
 {
   "appId": "com.ali.hifztracker",
   "appName": "Hifz Tracker",
-  "webDir": "www"
+  "webDir": "www",
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
 }
