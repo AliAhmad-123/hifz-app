@@ -7,7 +7,10 @@
   const root = document.documentElement;
   let idx = 0;
 
-  function setTabs() { tabs.forEach((t, i) => t.classList.toggle('active', i === idx)); }
+  function setTabs() {
+    tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+    document.dispatchEvent(new CustomEvent('hifz:page', { detail: idx }));
+  }
   function go(i) {
     idx = Math.max(0, Math.min(tabs.length - 1, i));
     setTabs();

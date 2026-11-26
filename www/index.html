@@ -1040,6 +1040,72 @@
     html.lite .pane { padding-bottom: 0.3rem; -webkit-overflow-scrolling: touch; }
     html.lite .set-btn { min-height: 3.6rem; }
   </style>
+  <style id="quran-css">
+    @font-face { font-family: 'Amiri Quran'; font-style: normal; font-weight: 400; font-display: swap; src: url(libs/fonts/amiri-quran-arabic-400-normal.woff2) format('woff2'); }
+    @font-face { font-family: 'Noto Nastaliq Urdu'; font-style: normal; font-weight: 400; font-display: swap; src: url(libs/fonts/noto-nastaliq-urdu-arabic-400-normal.woff2) format('woff2'); }
+
+    .qp-wrap { max-width: 760px; margin: 0 auto; padding: 0.2rem 0.1rem 1rem; }
+    .qp-title { display: flex; align-items: flex-start; gap: 0.7rem; margin: 0.2rem 0 1rem; }
+    .qp-title > i { flex: none; background: linear-gradient(135deg, var(--accent), var(--accent-3)); color: #fff; width: 2.4rem; height: 2.4rem; border-radius: 0.8rem; display: inline-flex; align-items: center; justify-content: center; }
+    .qp-title span { font-size: 1.2rem; font-weight: 800; color: var(--text-main); line-height: 1.2; }
+    .qp-title small { display: block; margin-top: 0.25rem; font-size: 0.74rem; font-weight: 500; color: var(--text-muted); line-height: 1.4; }
+    .seg { display: flex; gap: 0.3rem; padding: 0.3rem; background: var(--bg-soft); border: 1px solid var(--border-soft); border-radius: 1rem; margin-bottom: 0.8rem; }
+    .seg button { flex: 1; min-height: 2.6rem; border: none; background: transparent; border-radius: 0.75rem; font-size: 0.9rem; font-weight: 800; color: var(--text-soft); cursor: pointer; }
+    .seg button.active { background: linear-gradient(135deg, var(--accent), var(--accent-3)); color: #fff; }
+    .qp-search { display: flex; align-items: center; gap: 0.6rem; padding: 0 0.9rem; background: var(--bg-soft); border: 1.5px solid var(--border-soft); border-radius: 1rem; margin-bottom: 0.8rem; }
+    .qp-search i { color: var(--text-faint); }
+    .qp-search input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; padding: 0.8rem 0; font-size: 0.95rem; color: var(--text-main); }
+    .qs-list { display: flex; flex-direction: column; gap: 0.45rem; }
+    .qs-row { width: 100%; display: flex; align-items: center; gap: 0.8rem; text-align: left; padding: 0.65rem 0.8rem; min-height: 3.6rem; background: var(--bg-soft); border: 1.5px solid var(--border-soft); border-radius: 1rem; cursor: pointer; color: var(--text-main); }
+    .qs-row:active, .qj-card:active { background: var(--accent-lighter); border-color: var(--accent-2); }
+    .qs-num { flex: none; width: 2.3rem; height: 2.3rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 0.7rem; background: var(--accent-light); color: var(--accent); font-weight: 800; font-size: 0.82rem; }
+    .qs-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .qs-main b { font-size: 0.95rem; }
+    .qs-main small { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.1rem; }
+    .qs-bar { display: block; height: 4px; border-radius: 4px; background: var(--border-main); margin-top: 0.4rem; overflow: hidden; }
+    .qs-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent-2), var(--accent-3)); }
+    .qs-ar { flex: none; font-family: 'Amiri Quran', 'Noto Naskh Arabic', serif; font-size: 1.35rem; color: var(--accent); }
+    .qj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .qj-card { display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem; padding: 0.8rem 0.9rem; min-height: 5.6rem; background: var(--bg-soft); border: 1.5px solid var(--border-soft); border-radius: 1rem; cursor: pointer; text-align: left; color: var(--text-main); }
+    .qj-n { font-size: 0.74rem; font-weight: 800; letter-spacing: 0.4px; text-transform: uppercase; color: var(--accent); }
+    .qj-ar { align-self: flex-end; font-family: 'Amiri Quran', 'Noto Naskh Arabic', serif; font-size: 1.4rem; font-weight: 400; margin-top: auto; }
+    .qj-card small { font-size: 0.7rem; color: var(--text-muted); }
+    .q-empty { text-align: center; padding: 2rem 1rem; color: var(--text-faint); font-style: italic; }
+    .qp-credit { margin-top: 1rem; text-align: center; font-size: 0.7rem; color: var(--text-faint); line-height: 1.5; }
+
+    /* viewer */
+    .qv { position: fixed; inset: 0; z-index: 2850; display: none; flex-direction: column; background: var(--bg-app); }
+    .qv.open { display: flex; }
+    .qv-bar { flex: none; display: flex; align-items: center; gap: 0.3rem; padding: calc(0.5rem + env(safe-area-inset-top, 0px)) 0.5rem 0.5rem; background: linear-gradient(135deg, var(--accent), var(--accent-3)); color: #fff; }
+    .qv-bar button { flex: none; width: 2.5rem; height: 2.5rem; border: none; border-radius: 0.8rem; background: rgba(255,255,255,0.18); color: #fff; font-size: 0.95rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .qv-bar button:active { background: rgba(255,255,255,0.35); }
+    .qv-bar button.on { background: #fff; color: var(--accent); }
+    .qv-title { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 0 0.3rem; line-height: 1.25; }
+    .qv-title span { font-weight: 800; font-size: 0.98rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .qv-title small { font-family: 'Amiri Quran', 'Noto Naskh Arabic', serif; font-size: 0.95rem; opacity: 0.95; }
+    .qv-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .qv-body { max-width: 760px; margin: 0 auto; padding: 0.6rem 1rem calc(2rem + env(safe-area-inset-bottom, 0px)); }
+    .qv-sh { text-align: center; margin: 1rem 0 0.4rem; padding: 0.9rem 0.6rem; border: 1.5px solid var(--accent-2); border-radius: 1.1rem; background: var(--accent-lighter); }
+    .qv-sh-ar { font-family: 'Amiri Quran', 'Noto Naskh Arabic', serif; font-size: 2rem; color: var(--accent); line-height: 1.6; }
+    .qv-sh-en { font-size: 0.78rem; font-weight: 700; color: var(--text-soft); margin-top: 0.1rem; }
+    .qv-bis { text-align: center; font-family: 'Amiri Quran', 'Noto Naskh Arabic', serif; font-size: calc(var(--qv-fs, 2rem) * 0.95); color: var(--text-main); padding: 0.8rem 0 0.4rem; line-height: 2; }
+    .qv-cont { margin: 1rem 0 0.2rem; padding: 0.4rem 0.8rem; border-radius: 0.7rem; background: var(--accent-lighter); color: var(--accent); font-size: 0.8rem; font-weight: 800; text-align: center; }
+    .qv-note { margin: 0.8rem 0; padding: 0.6rem 0.8rem; border-radius: 0.8rem; background: var(--gold-bg); color: var(--gold-text); font-size: 0.8rem; }
+    .qa { padding: 0.8rem 0; border-bottom: 1px solid var(--border-light); }
+    .qa-ar { font-family: 'Amiri Quran', 'Noto Naskh Arabic', 'Scheherazade New', serif; font-size: var(--qv-fs, 2rem); line-height: 2.2; text-align: right; color: var(--text-main); }
+    .qa-no { display: inline-flex; align-items: center; justify-content: center; min-width: 1.9em; height: 1.9em; padding: 0 0.25em; box-sizing: border-box; margin-inline: 0.15em; border: 1.5px solid var(--accent-2); border-radius: 999px; color: var(--accent); font-family: system-ui, sans-serif; font-size: 0.5em; font-weight: 700; vertical-align: middle; line-height: 1; }
+    .qa.mem .qa-no { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .qa-ur { font-family: 'Noto Nastaliq Urdu', 'Noto Naskh Arabic', serif; font-size: calc(var(--qv-fs, 2rem) * 0.5); line-height: 2.4; text-align: right; color: var(--text-soft); margin-top: 0.2rem; }
+    .qv-state { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; text-align: center; padding: 3rem 1.5rem; color: var(--text-soft); }
+    .qv-state i { font-size: 2.2rem; color: var(--accent-2); }
+    .qv-state.err span { max-width: 22rem; line-height: 1.5; }
+    .qv-retry { border: none; cursor: pointer; padding: 0.8rem 1.3rem; border-radius: 0.9rem; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-3)); display: flex; gap: 0.5rem; align-items: center; }
+    .qv-retry i { font-size: 0.9rem; color: #fff; }
+    .qv-nav { display: flex; justify-content: space-between; gap: 0.6rem; margin-top: 1.4rem; }
+    .qv-nav button { flex: 1; min-height: 3rem; border-radius: 0.9rem; border: 1.5px solid var(--accent-2); background: var(--bg-soft); color: var(--accent); font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .qv-nav span { flex: 1; }
+    html.lite .qj-grid { gap: 0.45rem; }
+  </style>
 </head>
 <body>
   <div class="orb orb-1"></div>
@@ -1208,6 +1274,16 @@
     </div>
     </div>
 
+    <div class="pane" id="paneQuran">
+      <div class="qp-wrap">
+        <div class="qp-title"><i class="fas fa-book-quran"></i><span>Quran Kareem<small>Surah ya Juz chunein. Internet se aata hai, ek baar khulne ke baad offline bhi chalta hai.</small></span></div>
+        <div class="seg" id="qSeg"><button data-m="surah" class="active">Surah</button><button data-m="juz">Juz</button></div>
+        <div class="qp-search" id="qSearchWrap"><i class="fas fa-magnifying-glass"></i><input id="qSearch" type="search" placeholder="Surah dhoondhein (naam ya number)" autocomplete="off"></div>
+        <div id="qList" class="qs-list"></div>
+        <div class="qp-credit">Data: Al Quran Cloud API (alquran.cloud). Hara nishan = jo ayahs aap ne tracker mein yaad ki hain.</div>
+      </div>
+    </div>
+
     <div class="pane" id="paneSettings">
       <div class="set-wrap">
         <div class="set-title"><i class="fas fa-sliders"></i> Settings</div>
@@ -1243,7 +1319,8 @@
 
     <nav class="tabbar" id="tabbar">
       <button class="tab active" data-page="0"><i class="fas fa-house"></i> Home</button>
-      <button class="tab" data-page="1"><i class="fas fa-sliders"></i> Settings</button>
+      <button class="tab" data-page="1"><i class="fas fa-book-quran"></i> Quran</button>
+      <button class="tab" data-page="2"><i class="fas fa-sliders"></i> Settings</button>
     </nav>
   </div>
 
@@ -1385,6 +1462,17 @@
     </div>
   </div>
 
+  <div class="qv" id="qv">
+    <div class="qv-bar">
+      <button id="qvBack" title="Back"><i class="fas fa-arrow-left"></i></button>
+      <div class="qv-title"><span id="qvTitle">&mdash;</span><small id="qvSub"></small></div>
+      <button id="qvTr" title="Urdu tarjuma"><i class="fas fa-language"></i></button>
+      <button id="qvMinus" title="Chhota" class="qv-fs">A-</button>
+      <button id="qvPlus" title="Bada" class="qv-fs">A+</button>
+    </div>
+    <div class="qv-scroll" id="qvScroll"><div class="qv-body" id="qvBody"></div></div>
+  </div>
+
   <div class="toast" id="toast"></div>
   <canvas id="confettiCanvas"></canvas>
 
@@ -1429,6 +1517,7 @@
         ["Al-Falaq", 5, 30], ["An-Nas", 6, 30]
       ];
 
+      window.HIFZ_SURAH_DATA = SURAH_DATA;
       const TOTAL_QURAN_AYAHS = SURAH_DATA.reduce((sum, [, total]) => sum + total, 0);
 
       const SURAH_MAP = {};
@@ -2630,6 +2719,7 @@
   </script>
   <script src="reader.js"></script>
   <script src="backup.js"></script>
+  <script src="quran.js"></script>
   <script src="pager.js"></script>
 </body>
 </html>

@@ -321,13 +321,14 @@
   const Cap = window.Capacitor, App = Cap && Cap.Plugins && Cap.Plugins.App;
   if (App && App.addListener) {
     App.addListener('backButton', () => {
+      if (window.hifzQuran && window.hifzQuran.closeIfOpen()) return;
       const bk = $('bkOverlay');
       if (bk && bk.classList.contains('open')) return $('bkClose').click();
       if (isOpen()) return closeReader();
       const pop = $('surahLogOverlay'), rep = $('reportModal');
       if (pop && pop.classList.contains('active')) return $('popoverCloseBtn').click();
       if (rep && rep.classList.contains('active')) return $('closeReportBtn').click();
-      if (window.hifzPager && window.hifzPager.index() === 1) return window.hifzPager.go(0);
+      if (window.hifzPager && window.hifzPager.index() !== 0) return window.hifzPager.go(0);
       App.exitApp();
     });
   }
